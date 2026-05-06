@@ -1,7 +1,7 @@
 "use client";
 // Last update: 2026-05-07 - Triggering GitHub Action deployment
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 type Answers = Record<string, boolean>;
 
@@ -147,10 +147,30 @@ function Quiz({ quiz, onAnswer }: { quiz: typeof quizzes[number]; onAnswer: (id:
 export default function Home() {
   const [answers, setAnswers] = useState<Answers>({});
   const [show, setShow] = useState(false);
+  const [activeNav, setActiveNav] = useState("#vocab");
   const correct = Object.values(answers).filter(Boolean).length;
   const scoreText = correct === 10 ? `🎉 Perfekt! Skor Anda: ${correct}/10` : correct >= 7 ? `👏 Sehr gut! Skor Anda: ${correct}/10` : correct >= 4 ? `📚 Gut, tapi perlu latihan lagi. Skor: ${correct}/10` : `💪 Terus belajar! Skor: ${correct}/10`;
+  useEffect(() => {
+    const sectionIds = navItems.map(([href]) => href);
+    const updateActiveNav = () => {
+      const current = sectionIds.reduce((active, href) => {
+        const section = document.querySelector(href);
+        if (!section) return active;
+        return section.getBoundingClientRect().top <= 150 ? href : active;
+      }, sectionIds[0]);
+      setActiveNav(current);
+    };
+
+    updateActiveNav();
+    window.addEventListener("scroll", updateActiveNav, { passive: true });
+    window.addEventListener("resize", updateActiveNav);
+    return () => {
+      window.removeEventListener("scroll", updateActiveNav);
+      window.removeEventListener("resize", updateActiveNav);
+    };
+  }, []);
   return <main className="mx-auto max-w-[920px] px-5 py-6"><header className="mb-8 overflow-hidden rounded-[24px] bg-[linear-gradient(135deg,#267531_0%,#63bd6b_100%)] px-8 py-12 text-center text-white shadow-[0_20px_55px_rgba(38,117,49,0.24)]"><p className="mb-2 text-xs font-black uppercase tracking-[0.35em] text-[#fff4bd]">Deutsch Lernen</p><h1 className="mb-3 text-[2.25em] font-black tracking-[-0.03em] max-[600px]:text-[1.7em]">🇩🇪 Kapitel 5: Leben in der Stadt</h1><p className="text-[1.05em] opacity-95">Materi Lengkap Bahasa Jerman — Hidup di Kota</p></header>
-  <nav className="sticky top-3 z-50 mb-7 rounded-[22px] border border-[#b7d7b5] bg-white/92 px-3 py-3 shadow-[0_14px_38px_rgba(38,117,49,0.16)] backdrop-blur"><div className="flex flex-wrap items-center gap-2"><a className="flex shrink-0 items-center gap-2 rounded-2xl bg-[#287b31] px-4 py-2 text-sm font-black text-white no-underline shadow-sm transition hover:bg-[#176126]" href="#"><span>🇩🇪</span><span>Kapitel 5</span></a>{navItems.map(([href,icon,text])=><a className="flex shrink-0 items-center gap-2 rounded-2xl bg-[#edf8ea] px-4 py-2 text-sm font-black text-[#176126] no-underline transition hover:-translate-y-0.5 hover:bg-[#287b31] hover:text-white hover:shadow-md max-[520px]:px-3" href={href} key={href}><span>{icon}</span><span>{text}</span></a>)}</div></nav>
+  <nav className="sticky top-3 z-50 mb-7 rounded-[22px] border border-[#b7d7b5] bg-white/92 px-3 py-3 shadow-[0_14px_38px_rgba(38,117,49,0.16)] backdrop-blur"><div className="flex flex-wrap items-center gap-2"><a className="flex shrink-0 items-center gap-2 rounded-2xl bg-[#287b31] px-4 py-2 text-sm font-black text-white no-underline shadow-sm transition hover:bg-[#176126]" href="#"><span>🇩🇪</span><span>Kapitel 5</span></a>{navItems.map(([href,icon,text])=>{ const active = activeNav === href; return <a className={`flex shrink-0 items-center gap-2 rounded-2xl px-4 py-2 text-sm font-black no-underline shadow-sm transition hover:-translate-y-0.5 max-[520px]:px-3 ${active ? "bg-[#287b31] text-white ring-2 ring-[#f6c343]" : "bg-[#edf8ea] text-[#176126] hover:bg-[#287b31] hover:text-white hover:shadow-md"}`} href={href} key={href} onClick={() => setActiveNav(href)} aria-current={active ? "page" : undefined}><span>{icon}</span><span>{text}</span></a>;})}</div></nav>
   <Section><H2>📋 Daftar Isi</H2><div className="grid grid-cols-2 gap-3 max-[600px]:grid-cols-1">{[["#vocab","1. Kosakata (Wortschatz)"],["#grammar","2. Tata Bahasa (Grammatik)"],["#phrases","3. Frasa Umum (Redemittel)"],["#dialog","4. Dialog & Situasi"],["#culture","5. Landeskunde: Wien"],["#games","6. Flashcard & Mini Game"],["#exercises","7. Latihan Soal (Übungen)"]].map(([href,text])=><a className="block rounded-xl border border-[#d5e8d1] bg-[#edf8ea] px-4 py-3 font-bold text-[#176126] no-underline transition hover:-translate-y-0.5 hover:bg-[#dff1db] hover:shadow-md" href={href} key={href}>{text}</a>)}</div></Section>
   <Section id="vocab"><H2>1. 📖 Kosakata — Wortschatz</H2><H3>🏙️ Kota & Tempat (Stadt & Orte)</H3><VocabTable rows={places}/><H3>🚦 Layanan Kota (in der Stadt)</H3><VocabTable rows={cityServices}/><H3>💼 Pekerjaan & Wawancara (Bewerbungsgespräch)</H3><VocabTable rows={jobs}/><H3>🔎 Mencari Kerja (einen Job suchen)</H3><VocabTable rows={jobSearch}/><H3>�️ Bekerja di Restoran (im Restaurant arbeiten)</H3><VocabTable rows={restaurant}/><H3>🏛️ Di Kantor Pemerintahan (bei der Behörde)</H3><VocabTable rows={office}/><H3>�🏦 Di Bank & Kantor (Bei der Bank & Behörde)</H3><VocabTable rows={bank}/><H3>💳 Tambahan Kosakata Bank (in der Bank)</H3><VocabTable rows={bankExtra}/><H3>👮 Polisi & Tur Kota</H3><VocabTable rows={policeTour}/><H3>✨ Kata dan Ungkapan Lainnya</H3><VocabTable rows={expressions}/></Section>
   <Section id="grammar"><H2>2. 📐 Tata Bahasa — Grammatik</H2><H3>A. Adjektive nach dem bestimmten Artikel</H3><p>Ketika kata sifat muncul setelah artikel tertentu (<em>der, die, das</em>), endingnya berubah sesuai kasus:</p><Box title="Tabel Deklinasi"><DataTable headers={["Kasus","Maskulin (der)","Feminin (die)","Neutral (das)","Plural (die)"]} rows={[["Nominativ","der große Park","die schöne Stadt","das alte Haus","die kleinen Straßen"],["Akkusativ","den großen Park","die schöne Stadt","das alte Haus","die kleinen Straßen"],["Dativ","dem großen Park","der schönen Stadt","dem alten Haus","den kleinen Straßen"]]}/></Box><Tip>💡 <strong>Tips:</strong> Setelah artikel tertentu, akhiran kata sifat hanya <strong>-e</strong> atau <strong>-en</strong>. Nominativ singular selalu <strong>-e</strong>, sisanya <strong>-en</strong> (kecuali Akkusativ feminin & neutral = <strong>-e</strong>).</Tip><Example>Ich besuche <strong>die alte Kirche</strong>. → Saya mengunjungi gereja tua itu.<br/><span className="text-[0.9em] not-italic text-[#666]">Er wohnt in <strong>dem kleinen Haus</strong>. → Dia tinggal di rumah kecil itu.</span></Example><H3>B. Präpositionen: <em>ohne</em> + Akkusativ & <em>mit</em> + Dativ</H3><Box title="ohne + Akkusativ (tanpa)"><DataTable headers={["Contoh","Arti"]} rows={[["ohne den Ausweis","tanpa kartu identitas"],["ohne eine Bewerbung","tanpa lamaran"],["ohne das Formular","tanpa formulir"]]}/></Box><Box title="mit + Dativ (dengan)"><DataTable headers={["Contoh","Arti"]} rows={[["mit dem Bus","dengan bus"],["mit der Straßenbahn","dengan trem"],["mit dem Fahrrad","dengan sepeda"],["mit den Freunden","dengan teman-teman"]]}/></Box><Example>Ich fahre <strong>mit dem Zug</strong> nach Wien. → Saya naik kereta ke Wina.<br/>Er geht <strong>ohne den Regenschirm</strong>. → Dia pergi tanpa payung.</Example><H3>C. Konjunktiv II: <em>könnte</em> (Bisa / Bisakah)</H3><p>Digunakan untuk permintaan sopan, saran, atau kemungkinan. Ini adalah bentuk sopan dari <em>können</em>.</p><Box title="Konjugasi könnte"><DataTable headers={["Pronomen","Konjugasi","Contoh"]} rows={[["ich","könnte","Ich könnte Ihnen helfen."],["du","könntest","Könntest du mir das Formular geben?"],["er/sie/es","könnte","Er könnte morgen kommen."],["wir","könnten","Wir könnten zusammen gehen."],["ihr","könntet","Könntet ihr mir helfen?"],["sie/Sie","könnten","Könnten Sie das bitte wiederholen?"]]}/></Box><Tip>💡 <strong>Tips:</strong> Gunakan <em>Könnten Sie...?</em> untuk situasi formal (di bank, kantor, wawancara). Gunakan <em>Könntest du...?</em> untuk situasi informal.</Tip><Example><strong>Könnten Sie</strong> mir bitte helfen? → Bisakah Anda membantu saya?<br/><strong>Könnte</strong> ich ein Konto eröffnen? → Bisakah saya membuka rekening?</Example></Section>
