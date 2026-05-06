@@ -1,4 +1,5 @@
-﻿"use client";
+"use client";
+// Last update: 2026-05-07 - Triggering GitHub Action deployment
 
 import { useState } from "react";
 
