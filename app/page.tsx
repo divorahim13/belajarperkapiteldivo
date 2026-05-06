@@ -89,11 +89,28 @@ function Box({ title, children }: { title: string; children: React.ReactNode }) 
 function Flashcards() {
   const [index, setIndex] = useState(0);
   const [flipped, setFlipped] = useState(false);
+  const [dragStart, setDragStart] = useState<number | null>(null);
+  const [dragged, setDragged] = useState(false);
+  const [memorized, setMemorized] = useState<Record<string, boolean>>({});
   const card = flashcards[index];
+  const cardKey = `${card[0]}-${card[2]}`;
+  const learnedCount = Object.values(memorized).filter(Boolean).length;
+  const isMemorized = Boolean(memorized[cardKey]);
   const next = () => { setIndex((value) => (value + 1) % flashcards.length); setFlipped(false); };
   const prev = () => { setIndex((value) => (value - 1 + flashcards.length) % flashcards.length); setFlipped(false); };
+  const updateStatus = (value: boolean) => setMemorized((items) => ({ ...items, [cardKey]: value }));
+  const onPointerUp = (x: number) => {
+    if (dragStart === null) return;
+    const distance = x - dragStart;
+    setDragStart(null);
+    if (Math.abs(distance) < 55) return;
+    setDragged(true);
+    if (distance < 0) next();
+    else prev();
+    window.setTimeout(() => setDragged(false), 0);
+  };
 
-  return <div className="rounded-2xl border border-[#cde3ca] bg-[#f6fbf3] p-5"><button className="group h-[230px] w-full [perspective:1200px]" onClick={() => setFlipped((value) => !value)}><span className={`relative block h-full w-full rounded-[24px] transition-transform duration-700 [transform-style:preserve-3d] ${flipped ? "[transform:rotateY(180deg)]" : ""}`}><span className="absolute inset-0 flex flex-col items-center justify-center rounded-[24px] border border-[#b7d7b5] bg-[radial-gradient(circle_at_20%_15%,#fff8c7_0%,transparent_28%),linear-gradient(135deg,#ffffff_0%,#eaf8e6_100%)] px-6 text-center shadow-[0_18px_45px_rgba(38,117,49,0.16)] [backface-visibility:hidden] group-hover:shadow-[0_22px_55px_rgba(38,117,49,0.22)]"><span className="mb-4 rounded-full bg-[#287b31] px-4 py-1 text-xs font-black uppercase tracking-[0.28em] text-white">Deutsch</span><span className="text-3xl font-black text-[#176126] max-[600px]:text-2xl">{card[0]}</span><span className="mt-5 text-sm font-bold text-[#647268]">Klik untuk balik kartu</span></span><span className="absolute inset-0 flex flex-col items-center justify-center rounded-[24px] border border-[#f2dfa2] bg-[radial-gradient(circle_at_82%_18%,#c9f3cf_0%,transparent_30%),linear-gradient(135deg,#fff9e8_0%,#ffffff_100%)] px-6 text-center shadow-[0_18px_45px_rgba(74,59,20,0.14)] [backface-visibility:hidden] [transform:rotateY(180deg)]"><span className="mb-4 rounded-full bg-[#f6c343] px-4 py-1 text-xs font-black uppercase tracking-[0.28em] text-[#4a3b14]">Arti</span><span className="text-3xl font-black text-[#4a3b14] max-[600px]:text-2xl">{card[2]}</span><span className="mt-5 rounded-xl bg-white/80 px-4 py-2 text-sm font-black text-[#176126]">Plural: {card[1]}</span></span></span></button><div className="mt-4 flex flex-wrap items-center justify-between gap-3"><button className="rounded-xl bg-[#edf8ea] px-5 py-2 font-bold text-[#176126] hover:bg-[#dff1db]" onClick={prev}>← Sebelumnya</button><span className="font-bold text-[#647268]">{index + 1} / {flashcards.length}</span><button className="rounded-xl bg-[#287b31] px-5 py-2 font-bold text-white hover:bg-[#176126]" onClick={next}>Berikutnya →</button></div></div>;
+  return <div className="rounded-2xl border border-[#cde3ca] bg-[#f6fbf3] p-5"><div className="mb-3 flex flex-wrap items-center justify-between gap-2"><span className={`rounded-full px-3 py-1 text-xs font-black ${isMemorized ? "bg-[#dff1db] text-[#176126]" : "bg-[#fff2c7] text-[#6d4f00]"}`}>{isMemorized ? "Sudah hafal" : "Belum hafal"}</span><span className="text-sm font-bold text-[#647268]">{learnedCount} / {flashcards.length} hafal</span></div><button className="group h-[230px] w-full touch-pan-y [perspective:1200px]" onClick={() => { if (!dragged) setFlipped((value) => !value); }} onPointerDown={(event) => { setDragStart(event.clientX); setDragged(false); }} onPointerLeave={(event) => onPointerUp(event.clientX)} onPointerUp={(event) => onPointerUp(event.clientX)}><span className={`relative block h-full w-full rounded-[24px] transition-transform duration-700 [transform-style:preserve-3d] ${flipped ? "[transform:rotateY(180deg)]" : ""}`}><span className="absolute inset-0 flex flex-col items-center justify-center rounded-[24px] border border-[#b7d7b5] bg-[radial-gradient(circle_at_20%_15%,#fff8c7_0%,transparent_28%),linear-gradient(135deg,#ffffff_0%,#eaf8e6_100%)] px-6 text-center shadow-[0_18px_45px_rgba(38,117,49,0.16)] [backface-visibility:hidden] group-hover:shadow-[0_22px_55px_rgba(38,117,49,0.22)]"><span className="mb-4 rounded-full bg-[#287b31] px-4 py-1 text-xs font-black uppercase tracking-[0.28em] text-white">Deutsch</span><span className="text-3xl font-black text-[#176126] max-[600px]:text-2xl">{card[0]}</span><span className="mt-5 text-sm font-bold text-[#647268]">Klik balik, geser kiri/kanan</span></span><span className="absolute inset-0 flex flex-col items-center justify-center rounded-[24px] border border-[#f2dfa2] bg-[radial-gradient(circle_at_82%_18%,#c9f3cf_0%,transparent_30%),linear-gradient(135deg,#fff9e8_0%,#ffffff_100%)] px-6 text-center shadow-[0_18px_45px_rgba(74,59,20,0.14)] [backface-visibility:hidden] [transform:rotateY(180deg)]"><span className="mb-4 rounded-full bg-[#f6c343] px-4 py-1 text-xs font-black uppercase tracking-[0.28em] text-[#4a3b14]">Arti</span><span className="text-3xl font-black text-[#4a3b14] max-[600px]:text-2xl">{card[2]}</span><span className="mt-5 rounded-xl bg-white/80 px-4 py-2 text-sm font-black text-[#176126]">Plural: {card[1]}</span></span></span></button><div className="mt-4 grid grid-cols-2 gap-2"><button className={`rounded-xl px-4 py-2 font-bold ${isMemorized ? "bg-[#287b31] text-white" : "bg-[#edf8ea] text-[#176126] hover:bg-[#dff1db]"}`} onClick={() => updateStatus(true)}>Sudah hafal</button><button className={`rounded-xl px-4 py-2 font-bold ${!isMemorized ? "bg-[#f6c343] text-[#4a3b14]" : "bg-[#fff7dd] text-[#6d4f00] hover:bg-[#ffefb0]"}`} onClick={() => updateStatus(false)}>Belum hafal</button></div><div className="mt-4 flex flex-wrap items-center justify-between gap-3"><button className="rounded-xl bg-[#edf8ea] px-5 py-2 font-bold text-[#176126] hover:bg-[#dff1db]" onClick={prev}>← Sebelumnya</button><span className="font-bold text-[#647268]">{index + 1} / {flashcards.length}</span><button className="rounded-xl bg-[#287b31] px-5 py-2 font-bold text-white hover:bg-[#176126]" onClick={next}>Berikutnya →</button></div></div>;
 }
 
 function MiniGame() {
@@ -106,7 +123,12 @@ function MiniGame() {
   const normalizedAnswer = item.answer.toLowerCase();
   const check = () => {
     if (!normalizedInput) return setMessage("Tulis jawaban dulu ya.");
-    if (normalizedInput === normalizedAnswer) { setScore((value) => value + 1); setMessage("Benar! Weiter so!"); }
+    if (normalizedInput === normalizedAnswer) {
+      setScore((value) => value + 1);
+      setCurrent((value) => (value + 1) % gameItems.length);
+      setInput("");
+      setMessage("Benar! Lanjut soal berikutnya.");
+    }
     else setMessage(`Hampir! Jawaban: ${item.answer}`);
   };
   const next = () => { setCurrent((value) => (value + 1) % gameItems.length); setInput(""); setMessage(""); };
