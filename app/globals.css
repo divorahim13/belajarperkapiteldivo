@@ -1,0 +1,73 @@
+@import "tailwindcss";
+
+:root {
+  --background: #edf4ed;
+  --surface: #ffffff;
+  --surface-soft: #eef7ea;
+  --primary: #2f7d36;
+  --primary-dark: #176126;
+  --primary-light: #69bd70;
+  --accent: #f6c343;
+  --text: #1f2f22;
+  --muted: #647268;
+  --border: #d8e5d5;
+  --shadow: 0 18px 50px rgba(31, 74, 36, 0.1);
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  margin: 0;
+  min-height: 100vh;
+  background:
+    radial-gradient(circle at top left, rgba(105, 189, 112, 0.24), transparent 34rem),
+    linear-gradient(180deg, #f7fbf5 0%, var(--background) 48%, #e8f0e9 100%);
+  color: var(--text);
+  font-family: "Trebuchet MS", "Gill Sans", sans-serif;
+  line-height: 1.7;
+}
+
+a {
+  color: inherit;
+}
+
+table {
+  overflow: hidden;
+  border-radius: 12px;
+  box-shadow: inset 0 0 0 1px var(--border);
+}
+
+th,
+td {
+  vertical-align: top;
+}
+
+button,
+input {
+  font: inherit;
+}
+
+button:focus-visible,
+a:focus-visible,
+input:focus-visible {
+  outline: 3px solid rgba(246, 195, 67, 0.75);
+  outline-offset: 3px;
+}
+
+@media (max-width: 700px) {
+  body {
+    line-height: 1.6;
+  }
+
+  table {
+    display: block;
+    overflow-x: auto;
+    white-space: nowrap;
+  }
+}
