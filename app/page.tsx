@@ -5,6 +5,7 @@ import { useEffect, useState } from "react";
 
 type Answers = Record<string, boolean>;
 type FlashcardDirection = "de-id" | "id-de";
+type FlashcardStatus = "known" | "review";
 type GermanCardDetail = {
   example: string;
   translation: string;
@@ -189,22 +190,60 @@ function Flashcards({ direction }: { direction: FlashcardDirection }) {
   const [flipped, setFlipped] = useState(false);
   const [dragStart, setDragStart] = useState<number | null>(null);
   const [dragged, setDragged] = useState(false);
-  const [memorized, setMemorized] = useState<Record<string, boolean>>({});
+  const [slideDirection, setSlideDirection] = useState<"next" | "prev">("next");
+  const [slideNonce, setSlideNonce] = useState(0);
+  const [summaryOpen, setSummaryOpen] = useState(false);
+  const [message, setMessage] = useState("");
+  const [memorized, setMemorized] = useState<Record<string, FlashcardStatus>>({});
   const card = flashcards[index];
   const [term, info, meaning] = card;
   const detail = getFlashcardDetail(card);
   const isGermanToIndonesian = direction === "de-id";
   const cardKey = `${direction}-${term}-${meaning}`;
+  const currentStatus = memorized[cardKey];
   const frontLabel = isGermanToIndonesian ? "Deutsch" : "Indonesia";
   const backLabel = isGermanToIndonesian ? "Arti + Contoh" : "Deutsch";
   const frontText = isGermanToIndonesian ? term : meaning;
   const backText = isGermanToIndonesian ? meaning : term;
   const totalCards = flashcards.length;
-  const learnedCount = Object.values(memorized).filter(Boolean).length;
-  const isMemorized = Boolean(memorized[cardKey]);
-  const next = () => { setIndex((value) => (value + 1) % totalCards); setFlipped(false); };
-  const prev = () => { setIndex((value) => (value - 1 + totalCards) % totalCards); setFlipped(false); };
-  const updateStatus = (value: boolean) => setMemorized((items) => ({ ...items, [cardKey]: value }));
+  const isLastCard = index === totalCards - 1;
+  const learnedCount = Object.values(memorized).filter((value) => value === "known").length;
+  const answeredCount = Object.keys(memorized).length;
+  const reviewCards = flashcards.filter(([itemTerm, , itemMeaning]) => memorized[`${direction}-${itemTerm}-${itemMeaning}`] !== "known");
+  const statusText = currentStatus === "known" ? "Sudah hafal" : currentStatus === "review" ? "Belum hafal" : "Pilih status";
+  const statusClass = currentStatus === "known" ? "bg-[#dff1db] text-[#176126]" : currentStatus === "review" ? "bg-[#fff2c7] text-[#6d4f00]" : "bg-white text-[#647268]";
+  const knownButtonClass = currentStatus === "known" ? "bg-[#287b31] text-white shadow-[0_10px_22px_rgba(40,123,49,0.22)]" : "bg-[#edf8ea] text-[#176126] hover:bg-[#dff1db]";
+  const reviewButtonClass = currentStatus === "review" ? "bg-[#f6c343] text-[#4a3b14] shadow-[0_10px_22px_rgba(246,195,67,0.24)]" : "bg-[#fff7dd] text-[#6d4f00] hover:bg-[#ffefb0]";
+  const slideClass = slideDirection === "next" ? "flashcard-slide-next" : "flashcard-slide-prev";
+
+  const moveTo = (newIndex: number, directionType: "next" | "prev") => {
+    setSlideDirection(directionType);
+    setIndex(newIndex);
+    setFlipped(false);
+    setSummaryOpen(false);
+    setMessage("");
+    setSlideNonce((value) => value + 1);
+  };
+  const next = () => {
+    if (!currentStatus) {
+      setMessage("Pilih Sudah hafal atau Belum hafal dulu sebelum lanjut.");
+      return;
+    }
+    if (isLastCard) {
+      setSummaryOpen(true);
+      setMessage("");
+      return;
+    }
+    moveTo(index + 1, "next");
+  };
+  const prev = () => {
+    if (index === 0) return;
+    moveTo(index - 1, "prev");
+  };
+  const updateStatus = (value: FlashcardStatus) => {
+    setMemorized((items) => ({ ...items, [cardKey]: value }));
+    setMessage("");
+  };
   const onPointerUp = (x: number) => {
     if (dragStart === null) return;
     const distance = x - dragStart;
@@ -216,7 +255,7 @@ function Flashcards({ direction }: { direction: FlashcardDirection }) {
     window.setTimeout(() => setDragged(false), 0);
   };
 
-  return <div className="rounded-2xl border border-[#cde3ca] bg-[#f6fbf3] p-5"><div className="mb-3 flex flex-wrap items-center justify-between gap-2"><span className={`rounded-full px-3 py-1 text-xs font-black ${isMemorized ? "bg-[#dff1db] text-[#176126]" : "bg-[#fff2c7] text-[#6d4f00]"}`}>{isMemorized ? "Sudah hafal" : "Belum hafal"}</span><span className="text-sm font-bold text-[#647268]">{learnedCount} / {totalCards} hafal</span></div><button className={`group w-full touch-pan-y [perspective:1200px] ${isGermanToIndonesian ? "h-[420px]" : "h-[280px]"}`} onClick={() => { if (!dragged) setFlipped((value) => !value); }} onPointerDown={(event) => { setDragStart(event.clientX); setDragged(false); }} onPointerLeave={(event) => onPointerUp(event.clientX)} onPointerUp={(event) => onPointerUp(event.clientX)}><span className={`relative block h-full w-full rounded-[24px] transition-transform duration-700 [transform-style:preserve-3d] ${flipped ? "[transform:rotateY(180deg)]" : ""}`}><span className="absolute inset-0 flex flex-col items-center justify-center rounded-[24px] border border-[#b7d7b5] bg-[radial-gradient(circle_at_20%_15%,#fff8c7_0%,transparent_28%),linear-gradient(135deg,#ffffff_0%,#eaf8e6_100%)] px-6 text-center shadow-[0_18px_45px_rgba(38,117,49,0.16)] [backface-visibility:hidden] group-hover:shadow-[0_22px_55px_rgba(38,117,49,0.22)]"><span className="mb-4 rounded-full bg-[#287b31] px-4 py-1 text-xs font-black uppercase tracking-[0.28em] text-white">{frontLabel}</span><span className="text-3xl font-black text-[#176126] max-[600px]:text-2xl">{frontText}</span>{!isGermanToIndonesian && info !== "-" && <span className="mt-5 rounded-xl bg-white/80 px-4 py-2 text-sm font-black text-[#176126]">Petunjuk: {info}</span>}<span className="mt-5 text-sm font-bold text-[#647268]">Klik balik, geser kiri/kanan</span></span><span className="absolute inset-0 flex flex-col items-center justify-center overflow-y-auto rounded-[24px] border border-[#f2dfa2] bg-[radial-gradient(circle_at_82%_18%,#c9f3cf_0%,transparent_30%),linear-gradient(135deg,#fff9e8_0%,#ffffff_100%)] px-6 py-5 text-center shadow-[0_18px_45px_rgba(74,59,20,0.14)] [backface-visibility:hidden] [transform:rotateY(180deg)]"><span className="mb-3 rounded-full bg-[#f6c343] px-4 py-1 text-xs font-black uppercase tracking-[0.28em] text-[#4a3b14]">{backLabel}</span><span className="text-3xl font-black text-[#4a3b14] max-[600px]:text-2xl">{backText}</span><span className="mt-4 rounded-xl bg-white/80 px-4 py-2 text-sm font-black text-[#176126]">Bentuk: {info}</span>{isGermanToIndonesian && <span className="mt-4 block space-y-3 text-left text-sm not-italic text-[#382c10]"><span className="block rounded-xl bg-white/85 px-4 py-3"><strong>Contoh:</strong> {detail.example}</span><span className="block rounded-xl bg-white/85 px-4 py-3"><strong>Terjemahan:</strong> {detail.translation}</span><span className="block rounded-xl bg-white/85 px-4 py-3"><strong>Penjelasan:</strong> {detail.explanation}</span></span>}</span></span></button><div className="mt-4 grid grid-cols-2 gap-2"><button className={`rounded-xl px-4 py-2 font-bold ${isMemorized ? "bg-[#287b31] text-white" : "bg-[#edf8ea] text-[#176126] hover:bg-[#dff1db]"}`} onClick={() => updateStatus(true)}>Sudah hafal</button><button className={`rounded-xl px-4 py-2 font-bold ${!isMemorized ? "bg-[#f6c343] text-[#4a3b14]" : "bg-[#fff7dd] text-[#6d4f00] hover:bg-[#ffefb0]"}`} onClick={() => updateStatus(false)}>Belum hafal</button></div><div className="mt-4 flex flex-wrap items-center justify-between gap-3"><button className="rounded-xl bg-[#edf8ea] px-5 py-2 font-bold text-[#176126] hover:bg-[#dff1db]" onClick={prev}>← Sebelumnya</button><span className="font-bold text-[#647268]">{index + 1} / {totalCards}</span><button className="rounded-xl bg-[#287b31] px-5 py-2 font-bold text-white hover:bg-[#176126]" onClick={next}>Berikutnya →</button></div></div>;
+  return <div className="rounded-2xl border border-[#cde3ca] bg-[#f6fbf3] p-5"><div className="mb-3 flex flex-wrap items-center justify-between gap-2"><span className={`rounded-full px-3 py-1 text-xs font-black ${statusClass}`}>{statusText}</span><span className="text-sm font-bold text-[#647268]">{learnedCount} / {totalCards} hafal · {answeredCount} dinilai</span></div><button className={`group w-full touch-pan-y [perspective:1200px] ${isGermanToIndonesian ? "h-[420px]" : "h-[280px]"}`} onClick={() => { if (!dragged) setFlipped((value) => !value); }} onPointerDown={(event) => { setDragStart(event.clientX); setDragged(false); }} onPointerLeave={(event) => onPointerUp(event.clientX)} onPointerUp={(event) => onPointerUp(event.clientX)}><span key={`${direction}-${slideNonce}`} className={`relative block h-full w-full rounded-[24px] transition-transform duration-700 [transform-style:preserve-3d] ${slideClass} ${flipped ? "[transform:rotateY(180deg)]" : ""}`}><span className="absolute inset-0 flex flex-col items-center justify-center rounded-[24px] border border-[#b7d7b5] bg-[radial-gradient(circle_at_20%_15%,#fff8c7_0%,transparent_28%),linear-gradient(135deg,#ffffff_0%,#eaf8e6_100%)] px-6 text-center shadow-[0_18px_45px_rgba(38,117,49,0.16)] [backface-visibility:hidden] group-hover:shadow-[0_22px_55px_rgba(38,117,49,0.22)]"><span className="mb-4 rounded-full bg-[#287b31] px-4 py-1 text-xs font-black uppercase tracking-[0.28em] text-white">{frontLabel}</span><span className="text-3xl font-black text-[#176126] max-[600px]:text-2xl">{frontText}</span><span className="mt-5 text-sm font-bold text-[#647268]">Klik balik, geser kiri/kanan</span></span><span className="absolute inset-0 flex flex-col items-center justify-center overflow-y-auto rounded-[24px] border border-[#f2dfa2] bg-[radial-gradient(circle_at_82%_18%,#c9f3cf_0%,transparent_30%),linear-gradient(135deg,#fff9e8_0%,#ffffff_100%)] px-6 py-5 text-center shadow-[0_18px_45px_rgba(74,59,20,0.14)] [backface-visibility:hidden] [transform:rotateY(180deg)]"><span className="mb-3 rounded-full bg-[#f6c343] px-4 py-1 text-xs font-black uppercase tracking-[0.28em] text-[#4a3b14]">{backLabel}</span><span className="text-3xl font-black text-[#4a3b14] max-[600px]:text-2xl">{backText}</span><span className="mt-4 rounded-xl bg-white/80 px-4 py-2 text-sm font-black text-[#176126]">Bentuk: {info}</span>{isGermanToIndonesian && <span className="mt-4 block space-y-3 text-left text-sm not-italic text-[#382c10]"><span className="block rounded-xl bg-white/85 px-4 py-3"><strong>Contoh:</strong> {detail.example}</span><span className="block rounded-xl bg-white/85 px-4 py-3"><strong>Terjemahan:</strong> {detail.translation}</span><span className="block rounded-xl bg-white/85 px-4 py-3"><strong>Penjelasan:</strong> {detail.explanation}</span></span>}</span></span></button><div className="mt-4 grid grid-cols-2 gap-2"><button className={`rounded-xl px-4 py-2 font-bold transition ${knownButtonClass}`} onClick={() => updateStatus("known")}>Sudah hafal</button><button className={`rounded-xl px-4 py-2 font-bold transition ${reviewButtonClass}`} onClick={() => updateStatus("review")}>Belum hafal</button></div>{message && <div className="mt-3 rounded-xl border border-[#f2dfa2] bg-[#fff9e8] px-4 py-3 text-sm font-bold text-[#6d4f00]">{message}</div>}<div className="mt-4 flex flex-wrap items-center justify-between gap-3"><button className={`rounded-xl px-5 py-2 font-bold ${index === 0 ? "cursor-not-allowed bg-[#edf2ea] text-[#9aa79d]" : "bg-[#edf8ea] text-[#176126] hover:bg-[#dff1db]"}`} disabled={index === 0} onClick={prev}>← Sebelumnya</button><span className="font-bold text-[#647268]">{index + 1} / {totalCards}</span><button className={`rounded-xl px-5 py-2 font-bold text-white ${currentStatus ? "bg-[#287b31] hover:bg-[#176126]" : "cursor-not-allowed bg-[#8caf8a]"}`} onClick={next}>{isLastCard ? "Selesai" : "Berikutnya →"}</button></div>{summaryOpen && <div className="mt-5 rounded-2xl border border-[#cde3ca] bg-white px-5 py-4"><h4 className="font-black text-[#176126]">Daftar yang belum hafal</h4><p className="mt-1 text-sm font-bold text-[#647268]">{reviewCards.length === 0 ? "Mantap, semua kartu di deck ini sudah ditandai hafal." : `${reviewCards.length} kartu perlu diulang dari deck ini.`}</p>{reviewCards.length > 0 && <div className="mt-3 max-h-[260px] space-y-2 overflow-y-auto pr-1">{reviewCards.map(([itemTerm, itemInfo, itemMeaning]) => <div className="rounded-xl border border-[#d8e5d5] bg-[#f8fcf6] px-4 py-3 text-sm" key={`${direction}-review-${itemTerm}-${itemMeaning}`}><p className="font-black text-[#176126]">{isGermanToIndonesian ? itemTerm : itemMeaning}</p><p className="text-[#4a3b14]">{isGermanToIndonesian ? itemMeaning : itemTerm}</p><p className="text-xs font-bold text-[#647268]">Bentuk: {itemInfo}</p></div>)}</div>}<button className="mt-4 rounded-xl bg-[#edf8ea] px-5 py-2 font-bold text-[#176126] hover:bg-[#dff1db]" onClick={() => moveTo(0, "prev")}>Ulangi dari awal</button></div>}</div>;
 }
 
 function MiniGame() {

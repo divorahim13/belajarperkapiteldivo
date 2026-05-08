@@ -60,6 +60,61 @@ input:focus-visible {
   outline-offset: 3px;
 }
 
+.flashcard-slide-next {
+  animation: flashcard-slide-next 420ms cubic-bezier(0.2, 0.8, 0.2, 1);
+}
+
+.flashcard-slide-prev {
+  animation: flashcard-slide-prev 420ms cubic-bezier(0.2, 0.8, 0.2, 1);
+}
+
+@keyframes flashcard-slide-next {
+  0% {
+    opacity: 0;
+    transform: translateX(34px) rotateZ(2.5deg) scale(0.96);
+    filter: blur(4px);
+  }
+
+  58% {
+    opacity: 1;
+    transform: translateX(-8px) rotateZ(-0.8deg) scale(1.015);
+    filter: blur(0);
+  }
+
+  100% {
+    opacity: 1;
+    transform: translateX(0) rotateZ(0) scale(1);
+    filter: blur(0);
+  }
+}
+
+@keyframes flashcard-slide-prev {
+  0% {
+    opacity: 0;
+    transform: translateX(-34px) rotateZ(-2.5deg) scale(0.96);
+    filter: blur(4px);
+  }
+
+  58% {
+    opacity: 1;
+    transform: translateX(8px) rotateZ(0.8deg) scale(1.015);
+    filter: blur(0);
+  }
+
+  100% {
+    opacity: 1;
+    transform: translateX(0) rotateZ(0) scale(1);
+    filter: blur(0);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .flashcard-slide-next,
+  .flashcard-slide-prev {
+    animation: none;
+  }
+}
+
 @media (max-width: 700px) {
   body {
     line-height: 1.6;
