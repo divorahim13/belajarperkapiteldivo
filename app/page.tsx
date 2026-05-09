@@ -1,7 +1,7 @@
 "use client";
 // Last update: 2026-05-07 - Triggering GitHub Action deployment
 
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 
 type Answers = Record<string, boolean>;
 type FlashcardDirection = "de-id" | "id-de";
@@ -187,7 +187,8 @@ function getFlashcardDetail(card: string[]): GermanCardDetail {
 function Flashcards({ direction }: { direction: FlashcardDirection }) {
   const [index, setIndex] = useState(0);
   const [flipped, setFlipped] = useState(false);
-  const [dragStart, setDragStart] = useState<number | null>(null);
+  const dragStart = useRef<{ x: number; y: number } | null>(null);
+  const dragDistance = useRef({ x: 0, y: 0 });
   const [dragOffset, setDragOffset] = useState(0);
   const [isDragging, setIsDragging] = useState(false);
   const [dragged, setDragged] = useState(false);
@@ -220,34 +221,49 @@ function Flashcards({ direction }: { direction: FlashcardDirection }) {
   };
   const onPointerDown = (event: React.PointerEvent<HTMLButtonElement>) => {
     event.currentTarget.setPointerCapture(event.pointerId);
-    setDragStart(event.clientX);
+    dragStart.current = { x: event.clientX, y: event.clientY };
+    dragDistance.current = { x: 0, y: 0 };
     setDragOffset(0);
     setIsDragging(true);
     setDragged(false);
   };
   const onPointerMove = (event: React.PointerEvent<HTMLButtonElement>) => {
-    if (dragStart === null) return;
-    const distance = event.clientX - dragStart;
-    const easedDistance = Math.sign(distance) * Math.min(Math.abs(distance), 180);
+    const start = dragStart.current;
+    if (start === null) return;
+    const distanceX = event.clientX - start.x;
+    const distanceY = event.clientY - start.y;
+    dragDistance.current = { x: distanceX, y: distanceY };
+    const isMostlyVertical = Math.abs(distanceY) > Math.abs(distanceX) && Math.abs(distanceY) > 8;
+    if (isMostlyVertical) {
+      setDragOffset(0);
+      setDragged(true);
+      return;
+    }
+    const easedDistance = Math.sign(distanceX) * Math.min(Math.abs(distanceX), 180);
     setDragOffset(easedDistance);
-    if (Math.abs(distance) > 4) setDragged(true);
+    if (Math.abs(distanceX) > 4) setDragged(true);
   };
   const onPointerUp = (event: React.PointerEvent<HTMLButtonElement>) => {
-    if (dragStart === null) return;
-    const distance = event.clientX - dragStart;
+    const start = dragStart.current;
+    if (start === null) return;
+    const pointerDistanceX = event.clientX - start.x;
+    const pointerDistanceY = event.clientY - start.y;
+    const distanceX = Math.abs(pointerDistanceX) > Math.abs(dragDistance.current.x) ? pointerDistanceX : dragDistance.current.x;
+    const distanceY = Math.abs(pointerDistanceY) > Math.abs(dragDistance.current.y) ? pointerDistanceY : dragDistance.current.y;
+    const isHorizontalSwipe = Math.abs(distanceX) >= 92 && Math.abs(distanceX) > Math.abs(distanceY) * 1.25;
     if (event.currentTarget.hasPointerCapture(event.pointerId)) {
       event.currentTarget.releasePointerCapture(event.pointerId);
     }
-    setDragStart(null);
+    dragStart.current = null;
     setIsDragging(false);
     setDragOffset(0);
-    if (Math.abs(distance) < 92) {
-      if (Math.abs(distance) > 4) setDragged(true);
+    if (!isHorizontalSwipe) {
+      if (Math.abs(distanceX) > 4 || Math.abs(distanceY) > 4) setDragged(true);
       window.setTimeout(() => setDragged(false), 0);
       return;
     }
     setDragged(true);
-    if (distance < 0) next();
+    if (distanceX < 0) next();
     else if (index > 0) prev();
     window.setTimeout(() => setDragged(false), 0);
   };
