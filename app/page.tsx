@@ -95,7 +95,7 @@ const gameItems = [
   { clue: "Katedral", answer: "der Dom" },
   { clue: "Meminta bantuan", answer: "um einen Gefallen bitten" },
 ];
-const navItems = [["#vocab","📖","Kosakata"],["#grammar","📐","Grammatik"],["#phrases","💬","Redemittel"],["#dialog","🎭","Dialog"],["#culture","🌍","Wien"],["#flash-de-id","🃏","Flashcard"],["#mini-game","⚡","Mini Game"],["#exercises","✏️","Übungen"]];
+const navItems = [["#vocab","📖","Kosakata"],["#grammar","📐","Grammatik"],["#phrases","💬","Redemittel"],["#dialog","🎭","Dialog"],["#exam-prep","📝","Ujian"],["#culture","🌍","Wien"],["#flash-de-id","🃏","Flashcard"],["#mini-game","⚡","Mini Game"],["#exercises","✏️","Übungen"]];
 const flashNavItems = [["#flash-de-id", "🃏 Jerman → Indonesia"], ["#flash-id-de", "🃏 Indonesia → Jerman"], ["#mini-game", "⚡ Mini Game"]];
 
 type QuizLevel = "Mudah" | "Sedang" | "Sulit";
@@ -141,8 +141,51 @@ const situationExercises = [
   ["Sie haben Ihre Geldbörse vergessen und brauchen ein bisschen Geld.", "Geld leihen"],
   ["Sie haben ein Problem und brauchen Hilfe.", "um einen Gefallen bitten"],
 ];
+const formalEmailStructure = [
+  ["Betreff", "Termin beim Amt / Frage zur Stellenanzeige", "Tulis tema singkat dan jelas."],
+  ["Anrede", "Sehr geehrte Damen und Herren, / Sehr geehrte Frau Müller,", "Sapaan formal. Setelah koma, kalimat berikutnya mulai huruf kecil."],
+  ["Grund", "ich schreibe Ihnen, weil ich ...", "Jelaskan alasan menulis email."],
+  ["Bitte", "Könnten Sie mir bitte sagen, ...?", "Gunakan bentuk sopan dengan Könnten Sie atau Könnte ich."],
+  ["Details", "Ich möchte ... / Ich brauche ... / Ich muss ...", "Masukkan kosakata Kapitel 5: Antrag, Formular, Ausweis, Konto, Visum."],
+  ["Dank", "Vielen Dank im Voraus.", "Penutup isi email sebelum salam akhir."],
+  ["Gruß", "Mit freundlichen Grüßen", "Salam penutup formal."],
+];
+const formalEmailPhrases = [
+  ["Termin", "Könnte ich bitte einen Termin bekommen?", "Bisakah saya mendapat janji temu?"],
+  ["Dokumen", "Könnten Sie mir bitte sagen, welche Dokumente ich brauche?", "Bisakah Anda memberi tahu dokumen apa yang saya butuhkan?"],
+  ["Formular", "Ich muss das Formular ausfüllen und unterschreiben.", "Saya harus mengisi dan menandatangani formulir."],
+  ["Behörde", "Ich möchte den Antrag bei der Behörde abgeben.", "Saya ingin menyerahkan permohonan di kantor pemerintahan."],
+  ["Bank", "Ich möchte ein Konto eröffnen und brauche einen Antrag.", "Saya ingin membuka rekening dan membutuhkan formulir permohonan."],
+  ["Visum", "Mein Visum ist nur noch einen Monat gültig.", "Visa saya hanya berlaku satu bulan lagi."],
+  ["Bewerbung", "Ich interessiere mich für die Stelle als Aushilfe.", "Saya tertarik pada posisi sebagai pekerja bantuan/part-time."],
+];
+const politeRequestPatterns = [
+  ["Bantuan umum", "Könnten Sie mir bitte helfen?", "Bisakah Anda membantu saya?"],
+  ["Izin bertanya", "Dürfte ich Sie etwas fragen?", "Bolehkah saya bertanya sesuatu?"],
+  ["Meminta informasi", "Könnten Sie mir bitte sagen, wo die nächste Bank ist?", "Bisakah Anda memberi tahu di mana bank terdekat?"],
+  ["Meminta penjelasan", "Könnten Sie mir erklären, wie ich zum Amt komme?", "Bisakah Anda menjelaskan bagaimana saya ke kantor pemerintahan?"],
+  ["Meminta formulir", "Könnten Sie mir bitte das Formular geben?", "Bisakah Anda memberikan formulir itu kepada saya?"],
+  ["Meminta pemeriksaan", "Wären Sie so freundlich, meine Angaben zu prüfen?", "Maukah Anda memeriksa data saya?"],
+  ["Meminta janji", "Könnte ich bitte einen Termin haben?", "Bisakah saya mendapat janji temu?"],
+];
+const speakingSituations = [
+  ["Bei der Bank", "Guten Tag. Ich möchte ein Konto eröffnen. Könnten Sie mir bitte sagen, welches Formular ich ausfüllen muss?", "Gerne. Bitte füllen Sie dieses Formular aus und bringen Sie Ihren Ausweis mit."],
+  ["Bei der Behörde", "Guten Tag. Ich möchte mein Visum verlängern. Könnten Sie mir bitte sagen, welche Dokumente ich brauche?", "Natürlich. Sie brauchen den Antrag, Ihren Ausweis und ein gültiges Dokument."],
+  ["Bei der Polizei", "Guten Tag. Meine Geldbörse ist weg. Ich möchte den Diebstahl melden. Könnten Sie mir bitte helfen?", "Ja, natürlich. Bitte geben Sie hier Ihre Angaben an."],
+  ["In der Stadt", "Entschuldigung. Könnten Sie mir bitte sagen, wo die nächste Haltestelle ist?", "Ja. Gehen Sie geradeaus und dann links. Die Haltestelle ist vor dem Rathaus."],
+];
+const examWritingTasks = [
+  "Sie möchten bei der Behörde einen Termin bekommen. Schreiben Sie eine formale E-Mail und fragen Sie nach den Dokumenten.",
+  "Sie möchten ein Konto eröffnen. Schreiben Sie an die Bank und fragen Sie nach dem Formular und dem Ausweis.",
+  "Sie interessieren sich für eine Stelle als Aushilfe. Schreiben Sie eine kurze formale E-Mail an den Arbeitgeber.",
+];
+const examSpeakingTasks = [
+  "Bitten Sie im Amt höflich um Hilfe, weil Sie ein Formular nicht verstehen.",
+  "Fragen Sie bei der Bank höflich, ob Sie Geld abheben oder eine Überweisung machen können.",
+  "Sagen Sie der Polizei höflich, dass Ihre Geldbörse weg ist und Sie den Diebstahl melden möchten.",
+];
 
-function Section({ id, children }: { id?: string; children: React.ReactNode }) { return <section id={id} className="mb-7 rounded-[22px] border border-[#dfeade] bg-white/95 p-8 shadow-[var(--shadow)] backdrop-blur max-[600px]:p-5">{children}</section>; }
+function Section({ id, children }: { id?: string; children: React.ReactNode }) { return <section id={id} className="mb-7 scroll-mt-32 rounded-[22px] border border-[#dfeade] bg-white/95 p-8 shadow-[var(--shadow)] backdrop-blur max-[600px]:p-5">{children}</section>; }
 function H2({ children }: { children: React.ReactNode }) { return <h2 className="mb-5 border-b border-[#b7d7b5] pb-3 text-[1.55em] font-black tracking-[-0.02em] text-[#176126]">{children}</h2>; }
 function H3({ children }: { children: React.ReactNode }) { return <h3 className="mb-3 mt-6 flex items-center gap-2 text-[1.08em] font-extrabold text-[#24742d]">{children}</h3>; }
 function DataTable({ headers, rows }: { headers: string[]; rows: string[][] }) { return <div className="my-4 overflow-hidden rounded-xl border border-[#d8e5d5]"><table className="w-full border-collapse bg-white text-sm"><thead><tr>{headers.map((h, i) => <th className="bg-[#287b31] px-4 py-3 text-left font-extrabold text-white" key={`${h}-${i}`}>{h}</th>)}</tr></thead><tbody>{rows.map((r,i)=><tr className={i%2===0?"bg-[#f3faef]":"bg-white"} key={i}>{r.map((c,j)=><td className="border-t border-[#d8e5d5] px-4 py-3 text-[#223326]" key={`${i}-${j}-${c}`}>{c}</td>)}</tr>)}</tbody></table></div>; }
@@ -172,6 +215,10 @@ function Example({ children }: { children: React.ReactNode }) { return <div clas
 function Tip({ children }: { children: React.ReactNode }) { return <div className="my-3 rounded-xl border border-[#bfe4e7] border-l-[5px] border-l-[#00acc1] bg-[#ecfbfc] px-5 py-3 text-[#184f58]">{children}</div>; }
 function Box({ title, children }: { title: string; children: React.ReactNode }) { return <div className="my-4 rounded-2xl border border-[#cde3ca] bg-[#f2faef] px-5 py-4"><h4 className="mb-3 font-black text-[#176126]">{title}</h4>{children}</div>; }
 
+function ExamPrepSection() {
+  return <Section id="exam-prep"><H2>5. 📝 Materi Khusus Ujian: Schreiben & Sprechen</H2><p className="text-[#445449]">Fokus bagian ini adalah dua tugas yang sering keluar: menulis E-Mail formal dan berbicara dengan permintaan sopan. Semua contoh memakai Wortschatz Kapitel 5 seperti <em>die Behörde</em>, <em>das Formular</em>, <em>der Ausweis</em>, <em>der Antrag</em>, <em>das Konto</em>, <em>das Visum</em>, dan <em>um einen Gefallen bitten</em>.</p><H3>A. Schreiben: E-Mail formal</H3><Box title="Rumus cepat E-Mail formal"><DataTable headers={["Bagian", "Redemittel", "Fungsi"]} rows={formalEmailStructure}/></Box><Tip><strong>Pola aman untuk ujian:</strong> sapaan formal + alasan menulis + permintaan sopan + detail Kapitel 5 + terima kasih + salam penutup. Gunakan <em>Sie/Ihnen/Ihre</em> untuk formal, bukan <em>du/dir/deine</em>.</Tip><Box title="Wortschatz siap pakai untuk Schreiben"><DataTable headers={["Tema", "Kalimat", "Arti"]} rows={formalEmailPhrases}/></Box><H3>Contoh 1: E-Mail ke Behörde</H3><div className="my-3 rounded-xl border border-[#d8e5d5] bg-white px-5 py-4 text-[#223326]"><p className="font-black text-[#176126]">Betreff: Termin zur Visumverlängerung</p><p className="mt-3">Sehr geehrte Damen und Herren,</p><p className="mt-3">ich schreibe Ihnen, weil ich mein Visum verlängern möchte. Mein Visum ist nur noch einen Monat gültig. Könnten Sie mir bitte sagen, welche Dokumente ich brauche?</p><p className="mt-3">Ich habe meinen Ausweis und das Formular dabei. Könnte ich bitte nächste Woche einen Termin bekommen?</p><p className="mt-3">Vielen Dank im Voraus.</p><p className="mt-3">Mit freundlichen Grüßen<br/>[Name]</p></div><H3>Contoh 2: E-Mail ke Bank</H3><div className="my-3 rounded-xl border border-[#d8e5d5] bg-white px-5 py-4 text-[#223326]"><p className="font-black text-[#176126]">Betreff: Konto eröffnen</p><p className="mt-3">Sehr geehrte Damen und Herren,</p><p className="mt-3">ich möchte ein Konto eröffnen. Könnten Sie mir bitte erklären, welches Formular ich ausfüllen muss?</p><p className="mt-3">Ich habe meinen Ausweis dabei. Brauche ich noch ein anderes Dokument oder einen Antrag?</p><p className="mt-3">Vielen Dank für Ihre Hilfe.</p><p className="mt-3">Mit freundlichen Grüßen<br/>[Name]</p></div><H3>Checklist Schreiben sebelum dikumpulkan</H3><Box title="Cek 6 hal ini"><ol className="list-decimal space-y-2 pl-5 text-[#223326]"><li>Ada <strong>Betreff</strong> yang singkat.</li><li>Sapaan formal benar: <strong>Sehr geehrte Damen und Herren,</strong></li><li>Isi punya alasan: <strong>ich schreibe Ihnen, weil...</strong></li><li>Permintaan sopan memakai <strong>Könnten Sie...</strong> atau <strong>Könnte ich...</strong></li><li>Ada minimal 3 kosakata Kapitel 5, misalnya <em>Formular, Ausweis, Antrag</em>.</li><li>Penutup formal: <strong>Mit freundlichen Grüßen</strong></li></ol></Box><H3>B. Sprechen: permintaan yang sopan</H3><Box title="Pola kalimat untuk höflich bitten"><DataTable headers={["Situasi", "Kalimat", "Arti"]} rows={politeRequestPatterns}/></Box><Tip><strong>Formula 3 langkah untuk Sprechen:</strong> mulai dengan <em>Entschuldigung / Guten Tag</em>, sebutkan masalah dengan singkat, lalu pakai permintaan sopan. Contoh: <em>Entschuldigung, ich brauche Hilfe. Könnten Sie mir bitte das Formular geben?</em></Tip><H3>Dialog pendek untuk latihan</H3><div className="grid gap-4 md:grid-cols-2">{speakingSituations.map(([title, personA, personB])=><div className="rounded-xl border border-[#d8e5d5] bg-white px-5 py-4 text-[#223326]" key={title}><p className="font-black text-[#176126]">{title}</p><p className="mt-3"><strong>Person A:</strong> {personA}</p><p className="mt-2"><strong>Person B:</strong> {personB}</p></div>)}</div><H3>Simulasi soal ujian</H3><Box title="Schreiben: pilih 1 dan tulis 6-8 kalimat"><ol className="list-decimal space-y-2 pl-5 text-[#223326]">{examWritingTasks.map((task)=><li key={task}>{task}</li>)}</ol></Box><Box title="Sprechen: jawab dengan 2-3 kalimat sopan"><ol className="list-decimal space-y-2 pl-5 text-[#223326]">{examSpeakingTasks.map((task)=><li key={task}>{task}</li>)}</ol></Box></Section>;
+}
+
 function getFlashcardDetail(card: string[]): GermanCardDetail {
   const [term, info, meaning] = card;
   if (flashcardExamples[term]) return flashcardExamples[term];
@@ -188,13 +235,17 @@ function getFlashcardDetail(card: string[]): GermanCardDetail {
 function Flashcards({ direction }: { direction: FlashcardDirection }) {
   const [index, setIndex] = useState(0);
   const [flipped, setFlipped] = useState(false);
-  const dragStart = useRef<{ x: number; y: number } | null>(null);
+  const cardButtonRef = useRef<HTMLButtonElement | null>(null);
+  const dragStart = useRef<{ x: number; y: number; time: number } | null>(null);
   const dragDistance = useRef({ x: 0, y: 0 });
+  const gestureMode = useRef<"idle" | "horizontal" | "vertical">("idle");
+  const animationTimer = useRef<number | null>(null);
+  const clickGuardTimer = useRef<number | null>(null);
+  const suppressClick = useRef(false);
   const [dragOffset, setDragOffset] = useState(0);
   const [isDragging, setIsDragging] = useState(false);
-  const [dragged, setDragged] = useState(false);
-  const [slideDirection, setSlideDirection] = useState<"next" | "prev">("next");
-  const [slideNonce, setSlideNonce] = useState(0);
+  const [isAnimating, setIsAnimating] = useState(false);
+  const [transitionMs, setTransitionMs] = useState(0);
   const card = flashcards[index];
   const [term, info, meaning] = card;
   const detail = getFlashcardDetail(card);
@@ -204,29 +255,105 @@ function Flashcards({ direction }: { direction: FlashcardDirection }) {
   const frontText = isGermanToIndonesian ? term : meaning;
   const backText = isGermanToIndonesian ? meaning : term;
   const totalCards = flashcards.length;
-  const slideClass = slideDirection === "next" ? "flashcard-slide-next" : "flashcard-slide-prev";
-  const liveDragTransform = dragOffset ? `translate3d(${dragOffset}px, 0, 0)` : undefined;
+  const isFirstCard = index === 0;
+  const isLastCard = index === totalCards - 1;
+  const dragProgress = Math.min(Math.abs(dragOffset) / 360, 1);
+  const cardStyle = {
+    opacity: 1 - dragProgress * 0.16,
+    transform: `translate3d(${dragOffset}px, 0, 0) rotate(${dragOffset / 34}deg)`,
+    transition: isDragging || transitionMs === 0 ? "none" : `transform ${transitionMs}ms cubic-bezier(0.22, 1, 0.36, 1), opacity ${transitionMs}ms ease`,
+  };
 
-  const moveTo = (newIndex: number, directionType: "next" | "prev") => {
-    setSlideDirection(directionType);
-    setIndex(newIndex);
-    setFlipped(false);
-    setDragOffset(0);
-    setIsDragging(false);
-    setSlideNonce((value) => value + 1);
+  useEffect(() => {
+    return () => {
+      if (animationTimer.current !== null) window.clearTimeout(animationTimer.current);
+      if (clickGuardTimer.current !== null) window.clearTimeout(clickGuardTimer.current);
+    };
+  }, []);
+
+  const clearAnimationTimer = () => {
+    if (animationTimer.current !== null) {
+      window.clearTimeout(animationTimer.current);
+      animationTimer.current = null;
+    }
   };
-  const next = () => moveTo((index + 1) % totalCards, "next");
-  const prev = () => {
-    if (index === 0) return;
-    moveTo(index - 1, "prev");
+  const markSuppressClick = () => {
+    suppressClick.current = true;
+    if (clickGuardTimer.current !== null) window.clearTimeout(clickGuardTimer.current);
+    clickGuardTimer.current = window.setTimeout(() => {
+      suppressClick.current = false;
+    }, 350);
   };
-  const onPointerDown = (event: React.PointerEvent<HTMLButtonElement>) => {
-    event.currentTarget.setPointerCapture(event.pointerId);
-    dragStart.current = { x: event.clientX, y: event.clientY };
+  const getTargetIndex = (directionType: "next" | "prev") => {
+    if (directionType === "next") return isLastCard ? null : index + 1;
+    return isFirstCard ? null : index - 1;
+  };
+  const resetDragRefs = () => {
+    dragStart.current = null;
     dragDistance.current = { x: 0, y: 0 };
+    gestureMode.current = "idle";
+  };
+  const snapBack = () => {
+    clearAnimationTimer();
+    setIsDragging(false);
+    setIsAnimating(true);
+    setTransitionMs(180);
+    setDragOffset(0);
+    animationTimer.current = window.setTimeout(() => {
+      setIsAnimating(false);
+      setTransitionMs(0);
+    }, 190);
+  };
+  const slideTo = (directionType: "next" | "prev") => {
+    if (isAnimating) return;
+    const targetIndex = getTargetIndex(directionType);
+    if (targetIndex === null) {
+      markSuppressClick();
+      snapBack();
+      return;
+    }
+
+    const width = cardButtonRef.current?.offsetWidth ?? 360;
+    const exitOffset = directionType === "next" ? -width * 1.18 : width * 1.18;
+    const entryOffset = directionType === "next" ? width * 0.34 : -width * 0.34;
+
+    clearAnimationTimer();
+    markSuppressClick();
+    setIsDragging(false);
+    setIsAnimating(true);
+    setTransitionMs(170);
+    setDragOffset(exitOffset);
+
+    animationTimer.current = window.setTimeout(() => {
+      setIndex(targetIndex);
+      setFlipped(false);
+      setTransitionMs(0);
+      setDragOffset(entryOffset);
+
+      animationTimer.current = window.setTimeout(() => {
+        setTransitionMs(220);
+        setDragOffset(0);
+
+        animationTimer.current = window.setTimeout(() => {
+          setIsAnimating(false);
+          setTransitionMs(0);
+        }, 230);
+      }, 20);
+    }, 175);
+  };
+  const next = () => slideTo("next");
+  const prev = () => slideTo("prev");
+  const onPointerDown = (event: React.PointerEvent<HTMLButtonElement>) => {
+    if (isAnimating) return;
+    event.currentTarget.setPointerCapture(event.pointerId);
+    dragStart.current = { x: event.clientX, y: event.clientY, time: window.performance.now() };
+    dragDistance.current = { x: 0, y: 0 };
+    gestureMode.current = "idle";
+    suppressClick.current = false;
+    clearAnimationTimer();
+    setTransitionMs(0);
     setDragOffset(0);
     setIsDragging(true);
-    setDragged(false);
   };
   const onPointerMove = (event: React.PointerEvent<HTMLButtonElement>) => {
     const start = dragStart.current;
@@ -234,48 +361,67 @@ function Flashcards({ direction }: { direction: FlashcardDirection }) {
     const distanceX = event.clientX - start.x;
     const distanceY = event.clientY - start.y;
     dragDistance.current = { x: distanceX, y: distanceY };
-    const isMostlyVertical = Math.abs(distanceY) > Math.abs(distanceX) && Math.abs(distanceY) > 8;
-    if (isMostlyVertical) {
+
+    if (gestureMode.current === "idle") {
+      if (Math.max(Math.abs(distanceX), Math.abs(distanceY)) < 6) return;
+      gestureMode.current = Math.abs(distanceY) > Math.abs(distanceX) * 1.15 ? "vertical" : "horizontal";
+    }
+
+    if (gestureMode.current === "vertical") {
       if (event.currentTarget.hasPointerCapture(event.pointerId)) {
         event.currentTarget.releasePointerCapture(event.pointerId);
       }
-      dragStart.current = null;
+      resetDragRefs();
       setDragOffset(0);
       setIsDragging(false);
-      setDragged(false);
       return;
     }
-    if (Math.abs(distanceX) < 12) return;
-    const easedDistance = Math.sign(distanceX) * Math.min(Math.abs(distanceX), 180);
-    setDragOffset(easedDistance);
-    if (Math.abs(distanceX) > 4) setDragged(true);
+
+    event.preventDefault();
+    markSuppressClick();
+    const atStart = isFirstCard && distanceX > 0;
+    const atEnd = isLastCard && distanceX < 0;
+    const resistedDistance = atStart || atEnd ? distanceX * 0.28 : distanceX;
+    const width = cardButtonRef.current?.offsetWidth ?? 360;
+    const limitedDistance = Math.sign(resistedDistance) * Math.min(Math.abs(resistedDistance), width * 0.85);
+    setDragOffset(limitedDistance);
   };
-  const onPointerUp = (event: React.PointerEvent<HTMLButtonElement>) => {
+  const finishPointerDrag = (event: React.PointerEvent<HTMLButtonElement>, cancelled = false) => {
     const start = dragStart.current;
     if (start === null) return;
-    const pointerDistanceX = event.clientX - start.x;
-    const pointerDistanceY = event.clientY - start.y;
-    const distanceX = Math.abs(pointerDistanceX) > Math.abs(dragDistance.current.x) ? pointerDistanceX : dragDistance.current.x;
-    const distanceY = Math.abs(pointerDistanceY) > Math.abs(dragDistance.current.y) ? pointerDistanceY : dragDistance.current.y;
-    const isHorizontalSwipe = Math.abs(distanceX) >= 92 && Math.abs(distanceX) > Math.abs(distanceY) * 1.25;
     if (event.currentTarget.hasPointerCapture(event.pointerId)) {
       event.currentTarget.releasePointerCapture(event.pointerId);
     }
-    dragStart.current = null;
-    setIsDragging(false);
-    setDragOffset(0);
-    if (!isHorizontalSwipe) {
-      if (Math.abs(distanceX) > 4 || Math.abs(distanceY) > 4) setDragged(true);
-      window.setTimeout(() => setDragged(false), 0);
+
+    const distanceX = dragDistance.current.x;
+    const distanceY = dragDistance.current.y;
+    const elapsed = Math.max(window.performance.now() - start.time, 1);
+    const velocity = Math.abs(distanceX) / elapsed;
+    const directionType = distanceX < 0 ? "next" : "prev";
+    const width = cardButtonRef.current?.offsetWidth ?? 360;
+    const swipeThreshold = Math.min(120, width * 0.26);
+    const mode = gestureMode.current;
+    const moved = Math.abs(distanceX) > 6 || Math.abs(distanceY) > 6;
+    const isHorizontalSwipe = mode === "horizontal" && Math.abs(distanceX) > Math.abs(distanceY) * 1.2;
+    const shouldAdvance = !cancelled && isHorizontalSwipe && getTargetIndex(directionType) !== null && (Math.abs(distanceX) >= swipeThreshold || velocity > 0.55);
+
+    resetDragRefs();
+
+    if (shouldAdvance) {
+      slideTo(directionType);
       return;
     }
-    setDragged(true);
-    if (distanceX < 0) next();
-    else if (index > 0) prev();
-    window.setTimeout(() => setDragged(false), 0);
+    if (moved || cancelled) {
+      markSuppressClick();
+      snapBack();
+      return;
+    }
+    setIsDragging(false);
+    setDragOffset(0);
+    setTransitionMs(0);
   };
 
-  return <div className="rounded-2xl border border-[#cde3ca] bg-[#f6fbf3] p-5"><button className={`group w-full touch-pan-y [perspective:1400px] ${isDragging ? "cursor-grabbing" : "cursor-grab"} ${isGermanToIndonesian ? "h-[420px]" : "h-[280px]"}`} onClick={() => { if (!dragged) setFlipped((value) => !value); }} onPointerDown={onPointerDown} onPointerMove={onPointerMove} onPointerCancel={onPointerUp} onPointerUp={onPointerUp}><span key={`${direction}-${slideNonce}`} className={`relative block h-full w-full rounded-[24px] ${isDragging ? "transition-none" : "transition-transform duration-200 ease-out"} ${dragOffset ? "" : slideClass}`} style={liveDragTransform ? { transform: liveDragTransform } : undefined}><span className={`relative block h-full w-full rounded-[24px] transition-transform duration-700 [transform-style:preserve-3d] ${flipped ? "[transform:rotateY(180deg)]" : ""}`}><span className="absolute inset-0 flex flex-col items-center justify-center rounded-[24px] border border-[#b7d7b5] bg-[radial-gradient(circle_at_20%_15%,#fff8c7_0%,transparent_28%),linear-gradient(135deg,#ffffff_0%,#eaf8e6_100%)] px-6 text-center shadow-[0_18px_45px_rgba(38,117,49,0.16)] [backface-visibility:hidden] group-hover:shadow-[0_22px_55px_rgba(38,117,49,0.22)]"><span className="mb-4 rounded-full bg-[#287b31] px-4 py-1 text-xs font-black uppercase tracking-[0.28em] text-white">{frontLabel}</span><span className="text-3xl font-black text-[#176126] max-[600px]:text-2xl">{frontText}</span><span className="mt-5 text-sm font-bold text-[#647268]">Klik balik, geser kiri/kanan</span></span><span className="absolute inset-0 flex flex-col items-center justify-center overflow-y-auto rounded-[24px] border border-[#f2dfa2] bg-[radial-gradient(circle_at_82%_18%,#c9f3cf_0%,transparent_30%),linear-gradient(135deg,#fff9e8_0%,#ffffff_100%)] px-6 py-5 text-center shadow-[0_18px_45px_rgba(74,59,20,0.14)] [backface-visibility:hidden] [transform:rotateY(180deg)]"><span className="mb-3 rounded-full bg-[#f6c343] px-4 py-1 text-xs font-black uppercase tracking-[0.28em] text-[#4a3b14]">{backLabel}</span><span className="text-3xl font-black text-[#4a3b14] max-[600px]:text-2xl">{backText}</span><span className="mt-4 rounded-xl bg-white/80 px-4 py-2 text-sm font-black text-[#176126]">Bentuk: {info}</span>{isGermanToIndonesian && <span className="mt-4 block space-y-3 text-left text-sm not-italic text-[#382c10]"><span className="block rounded-xl bg-white/85 px-4 py-3"><strong>Contoh:</strong> {detail.example}</span><span className="block rounded-xl bg-white/85 px-4 py-3"><strong>Terjemahan:</strong> {detail.translation}</span><span className="block rounded-xl bg-white/85 px-4 py-3"><strong>Penjelasan:</strong> {detail.explanation}</span></span>}</span></span></span></button><div className="mt-4 flex flex-wrap items-center justify-between gap-3"><button className={`rounded-xl px-5 py-2 font-bold ${index === 0 ? "cursor-not-allowed bg-[#edf2ea] text-[#9aa79d]" : "bg-[#edf8ea] text-[#176126] hover:bg-[#dff1db]"}`} disabled={index === 0} onClick={prev}>← Sebelumnya</button><span className="font-bold text-[#647268]">{index + 1} / {totalCards}</span><button className="rounded-xl bg-[#287b31] px-5 py-2 font-bold text-white hover:bg-[#176126]" onClick={next}>Berikutnya →</button></div></div>;
+  return <div className="rounded-2xl border border-[#cde3ca] bg-[#f6fbf3] p-5"><button ref={cardButtonRef} className={`group w-full touch-pan-y select-none [perspective:1400px] ${isDragging ? "cursor-grabbing" : "cursor-grab"} ${isGermanToIndonesian ? "h-[420px] max-[600px]:h-[460px]" : "h-[280px] max-[600px]:h-[320px]"}`} onClick={() => { if (suppressClick.current || isAnimating) { suppressClick.current = false; return; } setFlipped((value) => !value); }} onPointerDown={onPointerDown} onPointerMove={onPointerMove} onPointerCancel={(event) => finishPointerDrag(event, true)} onPointerUp={(event) => finishPointerDrag(event)}><span key={`${direction}-${index}`} className="relative block h-full w-full rounded-[24px] will-change-[opacity,transform]" style={cardStyle}><span className={`relative block h-full w-full rounded-[24px] transition-transform duration-700 [transform-style:preserve-3d] ${flipped ? "[transform:rotateY(180deg)]" : ""}`}><span className="absolute inset-0 flex flex-col items-center justify-center rounded-[24px] border border-[#b7d7b5] bg-[radial-gradient(circle_at_20%_15%,#fff8c7_0%,transparent_28%),linear-gradient(135deg,#ffffff_0%,#eaf8e6_100%)] px-6 text-center shadow-[0_18px_45px_rgba(38,117,49,0.16)] [backface-visibility:hidden] group-hover:shadow-[0_22px_55px_rgba(38,117,49,0.22)]"><span className="mb-4 rounded-full bg-[#287b31] px-4 py-1 text-xs font-black uppercase tracking-[0.28em] text-white">{frontLabel}</span><span className="text-3xl font-black text-[#176126] max-[600px]:text-2xl">{frontText}</span><span className="mt-5 text-sm font-bold text-[#647268]">Klik balik, geser kiri/kanan</span></span><span className="absolute inset-0 flex flex-col items-center justify-center overflow-y-auto rounded-[24px] border border-[#f2dfa2] bg-[radial-gradient(circle_at_82%_18%,#c9f3cf_0%,transparent_30%),linear-gradient(135deg,#fff9e8_0%,#ffffff_100%)] px-6 py-5 text-center shadow-[0_18px_45px_rgba(74,59,20,0.14)] [backface-visibility:hidden] [transform:rotateY(180deg)]"><span className="mb-3 rounded-full bg-[#f6c343] px-4 py-1 text-xs font-black uppercase tracking-[0.28em] text-[#4a3b14]">{backLabel}</span><span className="text-3xl font-black text-[#4a3b14] max-[600px]:text-2xl">{backText}</span><span className="mt-4 rounded-xl bg-white/80 px-4 py-2 text-sm font-black text-[#176126]">Bentuk: {info}</span>{isGermanToIndonesian && <span className="mt-4 block space-y-3 text-left text-sm not-italic text-[#382c10]"><span className="block rounded-xl bg-white/85 px-4 py-3"><strong>Contoh:</strong> {detail.example}</span><span className="block rounded-xl bg-white/85 px-4 py-3"><strong>Terjemahan:</strong> {detail.translation}</span><span className="block rounded-xl bg-white/85 px-4 py-3"><strong>Penjelasan:</strong> {detail.explanation}</span></span>}</span></span></span></button><div className="mt-4 flex flex-wrap items-center justify-between gap-3"><button className={`rounded-xl px-5 py-2 font-bold ${isFirstCard || isAnimating ? "cursor-not-allowed bg-[#edf2ea] text-[#9aa79d]" : "bg-[#edf8ea] text-[#176126] hover:bg-[#dff1db]"}`} disabled={isFirstCard || isAnimating} onClick={prev}>← Sebelumnya</button><span className="font-bold text-[#647268]">{index + 1} / {totalCards}</span><button className={`rounded-xl px-5 py-2 font-bold ${isLastCard || isAnimating ? "cursor-not-allowed bg-[#edf2ea] text-[#9aa79d]" : "bg-[#287b31] text-white hover:bg-[#176126]"}`} disabled={isLastCard || isAnimating} onClick={next}>Berikutnya →</button></div></div>;
 }
 
 function MiniGame() {
@@ -339,13 +485,14 @@ export default function Home() {
   }, []);
   return <main className="mx-auto max-w-[920px] px-5 py-6"><header className="mb-8 overflow-hidden rounded-[24px] bg-[linear-gradient(135deg,#267531_0%,#63bd6b_100%)] px-8 py-12 text-center text-white shadow-[0_20px_55px_rgba(38,117,49,0.24)]"><p className="mb-2 text-xs font-black uppercase tracking-[0.35em] text-[#fff4bd]">Deutsch Lernen</p><h1 className="mb-3 text-[2.25em] font-black tracking-[-0.03em] max-[600px]:text-[1.7em]">🇩🇪 Kapitel 5: Leben in der Stadt</h1><p className="text-[1.05em] opacity-95">Materi Lengkap Bahasa Jerman — Hidup di Kota</p></header>
   <nav className="sticky top-3 z-50 mb-7 rounded-[22px] border border-[#b7d7b5] bg-white/92 px-3 py-3 shadow-[0_14px_38px_rgba(38,117,49,0.16)] backdrop-blur"><div className="flex items-center justify-between gap-2 md:hidden"><a className="flex shrink-0 items-center gap-2 rounded-2xl bg-[#287b31] px-4 py-2 text-sm font-black text-white no-underline shadow-sm transition hover:bg-[#176126]" href="#"><span>🇩🇪</span><span>Kapitel 5</span></a><button className="flex h-11 w-11 items-center justify-center rounded-2xl bg-[#edf8ea] text-2xl font-black text-[#176126] shadow-sm" type="button" aria-label={mobileMenuOpen ? "Tutup menu" : "Buka menu"} aria-expanded={mobileMenuOpen} onClick={() => setMobileMenuOpen((value) => !value)}><span aria-hidden="true">{mobileMenuOpen ? "×" : "☰"}</span></button></div><div className={`${mobileMenuOpen ? "flex" : "hidden"} mt-3 flex-col gap-2 md:mt-0 md:flex md:flex-row md:flex-wrap md:items-center`}><a className="hidden shrink-0 items-center gap-2 rounded-2xl bg-[#287b31] px-4 py-2 text-sm font-black text-white no-underline shadow-sm transition hover:bg-[#176126] md:flex" href="#"><span>🇩🇪</span><span>Kapitel 5</span></a>{navItems.map(([href,icon,text])=>{ const active = activeNav === href; return <a className={`flex shrink-0 items-center gap-2 rounded-2xl px-4 py-2 text-sm font-black no-underline shadow-sm transition hover:-translate-y-0.5 ${active ? "bg-[#287b31] text-white ring-2 ring-[#f6c343]" : "bg-[#edf8ea] text-[#176126] hover:bg-[#287b31] hover:text-white hover:shadow-md"}`} href={href} key={href} onClick={() => { setActiveNav(href); setMobileMenuOpen(false); }} aria-current={active ? "page" : undefined}><span>{icon}</span><span>{text}</span></a>;})}</div></nav>
-  <Section><H2>📋 Daftar Isi</H2><div className="grid grid-cols-2 gap-3 max-[600px]:grid-cols-1">{[["#vocab","1. Kosakata (Wortschatz)"],["#grammar","2. Tata Bahasa (Grammatik)"],["#phrases","3. Frasa Umum (Redemittel)"],["#dialog","4. Dialog & Situasi"],["#culture","5. Landeskunde: Wien"],["#flash-de-id","6. Flashcard"],["#mini-game","7. Mini Game"],["#exercises","8. Latihan Soal (Übungen)"]].map(([href,text])=><a className="block rounded-xl border border-[#d5e8d1] bg-[#edf8ea] px-4 py-3 font-bold text-[#176126] no-underline transition hover:-translate-y-0.5 hover:bg-[#dff1db] hover:shadow-md" href={href} key={href}>{text}</a>)}</div></Section>
+  <Section><H2>📋 Daftar Isi</H2><div className="grid grid-cols-2 gap-3 max-[600px]:grid-cols-1">{[["#vocab","1. Kosakata (Wortschatz)"],["#grammar","2. Tata Bahasa (Grammatik)"],["#phrases","3. Frasa Umum (Redemittel)"],["#dialog","4. Dialog & Situasi"],["#exam-prep","5. Materi Khusus Ujian"],["#culture","6. Landeskunde: Wien"],["#flash-de-id","7. Flashcard"],["#mini-game","8. Mini Game"],["#exercises","9. Latihan Soal (Übungen)"]].map(([href,text])=><a className="block rounded-xl border border-[#d5e8d1] bg-[#edf8ea] px-4 py-3 font-bold text-[#176126] no-underline transition hover:-translate-y-0.5 hover:bg-[#dff1db] hover:shadow-md" href={href} key={href}>{text}</a>)}</div></Section>
   <Section id="vocab"><H2>1. 📖 Kosakata — Wortschatz</H2><H3>🏙️ Kota & Tempat (Stadt & Orte)</H3><VocabTable rows={places}/><H3>🚦 Layanan Kota (in der Stadt)</H3><VocabTable rows={cityServices}/><H3>💼 Pekerjaan & Wawancara (Bewerbungsgespräch)</H3><VocabTable rows={jobs}/><H3>🔎 Mencari Kerja (einen Job suchen)</H3><VocabTable rows={jobSearch}/><H3>�️ Bekerja di Restoran (im Restaurant arbeiten)</H3><VocabTable rows={restaurant}/><H3>🏛️ Di Kantor Pemerintahan (bei der Behörde)</H3><VocabTable rows={office}/><H3>�🏦 Di Bank & Kantor (Bei der Bank & Behörde)</H3><VocabTable rows={bank}/><H3>💳 Tambahan Kosakata Bank (in der Bank)</H3><VocabTable rows={bankExtra}/><H3>👮 Polisi & Tur Kota</H3><VocabTable rows={policeTour}/><H3>✨ Kata dan Ungkapan Lainnya</H3><VocabTable rows={expressions}/></Section>
   <Section id="grammar"><H2>2. 📐 Tata Bahasa — Grammatik</H2><H3>A. Adjektive nach dem bestimmten Artikel</H3><p>Ketika kata sifat muncul setelah artikel tertentu (<em>der, die, das</em>), endingnya berubah sesuai kasus:</p><Box title="Tabel Deklinasi"><DataTable headers={["Kasus","Maskulin (der)","Feminin (die)","Neutral (das)","Plural (die)"]} rows={[["Nominativ","der große Park","die schöne Stadt","das alte Haus","die kleinen Straßen"],["Akkusativ","den großen Park","die schöne Stadt","das alte Haus","die kleinen Straßen"],["Dativ","dem großen Park","der schönen Stadt","dem alten Haus","den kleinen Straßen"]]}/></Box><Tip>💡 <strong>Tips:</strong> Setelah artikel tertentu, akhiran kata sifat hanya <strong>-e</strong> atau <strong>-en</strong>. Nominativ singular selalu <strong>-e</strong>, sisanya <strong>-en</strong> (kecuali Akkusativ feminin & neutral = <strong>-e</strong>).</Tip><Example>Ich besuche <strong>die alte Kirche</strong>. → Saya mengunjungi gereja tua itu.<br/><span className="text-[0.9em] not-italic text-[#666]">Er wohnt in <strong>dem kleinen Haus</strong>. → Dia tinggal di rumah kecil itu.</span></Example><H3>B. Präpositionen: <em>ohne</em> + Akkusativ & <em>mit</em> + Dativ</H3><Box title="ohne + Akkusativ (tanpa)"><DataTable headers={["Contoh","Arti"]} rows={[["ohne den Ausweis","tanpa kartu identitas"],["ohne eine Bewerbung","tanpa lamaran"],["ohne das Formular","tanpa formulir"]]}/></Box><Box title="mit + Dativ (dengan)"><DataTable headers={["Contoh","Arti"]} rows={[["mit dem Bus","dengan bus"],["mit der Straßenbahn","dengan trem"],["mit dem Fahrrad","dengan sepeda"],["mit den Freunden","dengan teman-teman"]]}/></Box><Example>Ich fahre <strong>mit dem Zug</strong> nach Wien. → Saya naik kereta ke Wina.<br/>Er geht <strong>ohne den Regenschirm</strong>. → Dia pergi tanpa payung.</Example><H3>C. Konjunktiv II: <em>könnte</em> (Bisa / Bisakah)</H3><p>Digunakan untuk permintaan sopan, saran, atau kemungkinan. Ini adalah bentuk sopan dari <em>können</em>.</p><Box title="Konjugasi könnte"><DataTable headers={["Pronomen","Konjugasi","Contoh"]} rows={[["ich","könnte","Ich könnte Ihnen helfen."],["du","könntest","Könntest du mir das Formular geben?"],["er/sie/es","könnte","Er könnte morgen kommen."],["wir","könnten","Wir könnten zusammen gehen."],["ihr","könntet","Könntet ihr mir helfen?"],["sie/Sie","könnten","Könnten Sie das bitte wiederholen?"]]}/></Box><Tip>💡 <strong>Tips:</strong> Gunakan <em>Könnten Sie...?</em> untuk situasi formal (di bank, kantor, wawancara). Gunakan <em>Könntest du...?</em> untuk situasi informal.</Tip><Example><strong>Könnten Sie</strong> mir bitte helfen? → Bisakah Anda membantu saya?<br/><strong>Könnte</strong> ich ein Konto eröffnen? → Bisakah saya membuka rekening?</Example><H3>D. Artikel: der, die, das, ein, kein</H3><p>Artikel menunjukkan gender, jumlah, dan kasus. Pada level dasar, hafalkan artikel bersama kosakatanya karena artikel berubah saat masuk Akkusativ atau Dativ.</p><Box title="Artikel penting per kasus"><DataTable headers={["Kasus","Maskulin","Feminin","Neutral","Plural"]} rows={[["Nominativ","der / ein / kein","die / eine / keine","das / ein / kein","die / - / keine"],["Akkusativ","den / einen / keinen","die / eine / keine","das / ein / kein","die / - / keine"],["Dativ","dem / einem / keinem","der / einer / keiner","dem / einem / keinem","den / - / keinen + -n"]]}/></Box><Tip><strong>kein</strong> dipakai untuk menyangkal kata benda: <em>Ich habe keinen Ausweis</em> = saya tidak punya kartu identitas. <strong>nicht</strong> menyangkal verba, adjektif, atau seluruh kalimat: <em>Das Formular ist nicht richtig.</em></Tip><Example><strong>Der Antrag</strong> ist wichtig. → Permohonan itu penting.<br/><strong>Ich unterschreibe den Antrag.</strong> → Saya menandatangani permohonan itu.<br/><strong>Ich helfe dem Touristen.</strong> → Saya membantu turis laki-laki itu.</Example><H3>E. Kasus: Nominativ, Akkusativ, Dativ</H3><p>Gunakan pertanyaan sederhana untuk menentukan kasus: siapa melakukan sesuatu? = Nominativ; apa/siapa yang dikenai tindakan? = Akkusativ; kepada/untuk siapa? atau setelah preposisi Dativ = Dativ.</p><Box title="Cara cepat membaca kasus"><DataTable headers={["Kasus","Fungsi","Pertanyaan","Contoh"]} rows={[["Nominativ","Subjek","wer? / was?","Der Beamte arbeitet."],["Akkusativ","Objek langsung","wen? / was?","Ich brauche den Ausweis."],["Dativ","Objek penerima / setelah mit, bei, zu","wem? / wo?","Sie hilft dem Kunden."]]}/></Box><Example><strong>Die Beamtin gibt dem Mann das Formular.</strong> → Pegawai negeri perempuan memberi formulir itu kepada pria tersebut.<br/><span className="text-[0.9em] not-italic text-[#666]">die Beamtin = Nominativ, dem Mann = Dativ, das Formular = Akkusativ.</span></Example><H3>F. Wechselpräpositionen: in, an, auf, vor, über</H3><p>Beberapa preposisi bisa memakai Akkusativ atau Dativ. Jika menunjukkan arah/gerakan ke tujuan, pakai Akkusativ. Jika menunjukkan lokasi tetap, pakai Dativ.</p><Box title="Arah vs lokasi"><DataTable headers={["Pertanyaan","Kasus","Contoh","Arti"]} rows={[["wohin? ke mana","Akkusativ","Ich gehe in die Stadt.","Saya pergi ke kota."],["wo? di mana","Dativ","Ich bin in der Stadt.","Saya berada di kota."],["wohin?","Akkusativ","Er stellt das Auto auf den Parkplatz.","Dia menaruh mobil ke tempat parkir."],["wo?","Dativ","Das Auto steht auf dem Parkplatz.","Mobil itu berada di tempat parkir."]]}/></Box><Tip>Verba gerak seperti <em>gehen, fahren, stellen, legen</em> sering memicu Akkusativ. Verba posisi seperti <em>sein, stehen, sitzen, liegen, wohnen</em> sering memicu Dativ.</Tip><H3>G. Trennbare Verben & Perfekt</H3><p>Verba pisah memiliki awalan seperti <em>aus-, ab-, ein-, mit-</em>. Pada kalimat utama present tense, awalan pindah ke akhir. Pada Perfekt, bentuk participle sering menjadi <em>ge</em> di antara awalan dan verba dasar.</p><Box title="Verba pisah dari Kapitel ini"><DataTable headers={["Infinitiv","Präsens","Perfekt","Arti"]} rows={[["ausfüllen","Ich fülle das Formular aus.","Ich habe das Formular ausgefüllt.","mengisi"],["abheben","Ich hebe Geld ab.","Ich habe Geld abgehoben.","menarik uang"],["einzahlen","Sie zahlt Geld ein.","Sie hat Geld eingezahlt.","menyetor"],["abgeben","Wir geben die Unterlagen ab.","Wir haben die Unterlagen abgegeben.","menyerahkan"],["mitbringen","Bitte bringen Sie den Ausweis mit.","Sie haben den Ausweis mitgebracht.","membawa serta"]]}/></Box><Example><strong>Ich muss das Formular ausfüllen.</strong> → Saya harus mengisi formulir itu.<br/><span className="text-[0.9em] not-italic text-[#666]">Dengan modalverb <em>muss</em>, verba utama kembali menjadi infinitiv di akhir: ausfüllen.</span></Example><H3>H. Nebensatz & indirekte Fragen</H3><p>Pada anak kalimat bahasa Jerman, verba terkonjugasi pindah ke akhir. Ini sangat sering muncul saat bertanya dengan sopan memakai <em>Könnten Sie mir sagen/erklären...</em></p><Box title="Struktur anak kalimat"><DataTable headers={["Kalimat langsung","Kalimat sopan/tidak langsung","Arti"]} rows={[["Wo ist der Bahnhof?","Könnten Sie mir sagen, wo der Bahnhof ist?","Bisakah Anda memberi tahu saya di mana stasiun?"],["Wie komme ich zum Amt?","Könnten Sie mir erklären, wie ich zum Amt komme?","Bisakah Anda menjelaskan bagaimana saya ke kantor pemerintahan?"],["Welche Dokumente brauche ich?","Ich weiß nicht, welche Dokumente ich brauche.","Saya tidak tahu dokumen apa yang saya perlukan."]]}/></Box><Tip>Setelah koma, perhatikan posisi verba: <em>ist, komme, brauche</em> berada di akhir anak kalimat.</Tip></Section>
   <Section id="phrases"><H2>3. 💬 Frasa Umum — Redemittel</H2>{[["🙏 Meminta dengan Sopan (Höflich bitten)",["Könnten Sie mir bitte helfen? → Bisakah Anda membantu saya?","Könnte ich bitte einen Termin haben? → Bisakah saya mendapat janji temu?","Dürfte ich Sie etwas fragen? → Bolehkah saya bertanya sesuatu?","Wären Sie so freundlich, mir zu helfen? → Maukah Anda membantu saya?"]],["🔍 Menanyakan Sesuatu (Nach Dingen fragen)",["Wo ist die nächste Bank? → Di mana bank terdekat?","Wie komme ich zum Bahnhof? → Bagaimana saya bisa ke stasiun?","Können Sie mir den Weg zeigen? → Bisakah Anda menunjukkan jalannya?","Was brauche ich für den Antrag? → Apa yang saya butuhkan untuk permohonan?"]],["🏦 Di Bank (Gespräche bei der Bank)",["Ich möchte ein Konto eröffnen. → Saya ingin membuka rekening.","Kann ich Geld abheben? → Bisakah saya menarik uang?","Ich möchte Geld überweisen. → Saya ingin mentransfer uang."]],["🏛️ Di Kantor Pemerintahan (Bei der Behörde)",["Ich brauche eine Anmeldung. → Saya perlu registrasi.","Wo muss ich unterschreiben? → Di mana saya harus tanda tangan?","Welche Dokumente brauche ich? → Dokumen apa yang saya butuhkan?"]],["🏙️ Mendeskripsikan Kota (Eine Stadt beschreiben)",["Die Stadt ist sehr schön und modern. → Kota ini sangat cantik dan modern.","Es gibt viele Parks und Museen. → Ada banyak taman dan museum.","Die Altstadt ist besonders sehenswert. → Kota tua sangat layak dikunjungi.","Man kann gut mit der U-Bahn fahren. → Bisa dengan mudah naik metro."]]].map(([title,items])=><div key={title as string}><H3>{title as string}</H3>{(items as string[]).map(x=><Example key={x}>{x}</Example>)}</div>)}</Section>
   <Section id="dialog"><H2>4. 🎭 Contoh Dialog</H2><H3>Dialog 1: Di Bank</H3><div className="my-2.5 rounded-[10px] bg-[#f9fbe7] p-[18px]"><p><strong>🧑 Kunde:</strong> Guten Tag! Ich möchte ein Konto eröffnen.</p><p><strong>👨‍💼 Bankangestellter:</strong> Guten Tag! Haben Sie Ihren Ausweis dabei?</p><p><strong>🧑 Kunde:</strong> Ja, hier bitte. Könnten Sie mir erklären, welche Konten es gibt?</p><p><strong>👨‍💼 Bankangestellter:</strong> Natürlich. Wir haben ein Girokonto und ein Sparkonto.</p><p><strong>🧑 Kunde:</strong> Ich möchte ein Girokonto. Was muss ich ausfüllen?</p><p><strong>👨‍💼 Bankangestellter:</strong> Bitte füllen Sie dieses Formular aus und unterschreiben Sie hier.</p><p><strong>🧑 Kunde:</strong> Vielen Dank für Ihre Hilfe!</p></div><H3>Dialog 2: Wawancara Kerja</H3><div className="my-2.5 rounded-[10px] bg-[#f9fbe7] p-[18px]"><p><strong>👨‍💼 Interviewer:</strong> Guten Tag, Frau Müller. Bitte setzen Sie sich.</p><p><strong>👩 Bewerberin:</strong> Vielen Dank. Ich freue mich über die Einladung.</p><p><strong>👨‍💼 Interviewer:</strong> Erzählen Sie uns von Ihrer Erfahrung.</p><p><strong>👩 Bewerberin:</strong> Ich habe drei Jahre als Sekretärin gearbeitet. Ich könnte sofort anfangen.</p><p><strong>👨‍💼 Interviewer:</strong> Sehr gut. Könnten Sie auch am Wochenende arbeiten?</p><p><strong>👩 Bewerberin:</strong> Ja, das wäre kein Problem.</p></div></Section>
-  <Section id="culture"><H2>5. 🌍 Landeskunde: Rund um den Ring — Wien</H2><p><strong>Die Ringstraße</strong> adalah jalan boulevard terkenal di Wina (Wien), ibu kota Austria. Jalan ini mengelilingi pusat kota tua (<em>Innere Stadt</em>) dan dibangun pada abad ke-19.</p><p>Di sepanjang Ringstraße, Anda bisa menemukan bangunan penting seperti:</p><DataTable headers={["Gebäude","Arti","Fungsi"]} rows={buildings}/><Tip>💡 Wien sering disebut sebagai salah satu kota paling layak huni di dunia!</Tip></Section>
-  <Section id="games"><H2>6. 🎮 Flashcard & Mini Game</H2><nav className="mb-5 flex flex-wrap gap-2 rounded-2xl border border-[#d5e8d1] bg-[#f6fbf3] p-2" aria-label="Navigasi flashcard">{flashNavItems.map(([href,text])=><a className="rounded-xl bg-white px-4 py-2 text-sm font-black text-[#176126] no-underline shadow-sm transition hover:bg-[#287b31] hover:text-white" href={href} key={href}>{text}</a>)}</nav><div className="grid grid-cols-2 gap-5 max-[760px]:grid-cols-1"><div id="flash-de-id" className="scroll-mt-24"><H3>🃏 Flashcard Jerman → Indonesia</H3><Flashcards direction="de-id" /></div><div id="flash-id-de" className="scroll-mt-24"><H3>🃏 Flashcard Indonesia → Jerman</H3><Flashcards direction="id-de" /></div><div id="mini-game" className="col-span-2 scroll-mt-24 max-[760px]:col-span-1"><H3>⚡ Mini Game</H3><MiniGame /></div></div></Section>
-  <Section id="exercises"><H2>7. ✏️ Latihan Soal — Übungen</H2>{quizGroups.map((group)=><div key={group.level}><H3>{group.title}</H3><p className="mb-2 text-[#647268]">{group.intro}</p>{quizzes.filter((quiz)=>quiz.level===group.level).map(q=><Quiz key={q.id} quiz={q} onAnswer={(id,ok)=>setAnswers(a=>({...a,[id]:ok}))}/>)}</div>)}<H3>Übung 4: Was machen Sie in dieser Situation?</H3><Box title="Lengkapi dengan ungkapan yang sesuai">{situationExercises.map(([situation, answer], index)=><div className="my-3 rounded-xl border border-[#d8e5d5] bg-white px-4 py-3" key={situation}><p className="font-bold text-[#223326]">{index + 1}. {situation}</p><p className="mt-1 text-[#176126]"><strong>Antwort:</strong> {answer}</p></div>)}</Box><div className="mt-6 text-center"><button className="inline-block cursor-pointer rounded-lg border-0 bg-[#2e7d32] px-8 py-3 text-[1.1em] text-white hover:bg-[#1b5e20]" onClick={()=>setShow(true)}>📊 Lihat Skor Total</button>{show && <div className="mt-4 text-[1.3em] font-bold text-[#2e7d32]">{scoreText}</div>}</div></Section>
-  <footer className="p-5 text-center text-[0.9em] text-[#888]">Materi Bahasa Jerman — Kapitel 5: Leben in der Stadt<br/>Update: 7 Mei 2026<br/>Viel Erfolg beim Lernen! 🍀</footer></main>;
+  <ExamPrepSection />
+  <Section id="culture"><H2>6. 🌍 Landeskunde: Rund um den Ring — Wien</H2><p><strong>Die Ringstraße</strong> adalah jalan boulevard terkenal di Wina (Wien), ibu kota Austria. Jalan ini mengelilingi pusat kota tua (<em>Innere Stadt</em>) dan dibangun pada abad ke-19.</p><p>Di sepanjang Ringstraße, Anda bisa menemukan bangunan penting seperti:</p><DataTable headers={["Gebäude","Arti","Fungsi"]} rows={buildings}/><Tip>💡 Wien sering disebut sebagai salah satu kota paling layak huni di dunia!</Tip></Section>
+  <Section id="games"><H2>7. 🎮 Flashcard & Mini Game</H2><nav className="mb-5 flex flex-wrap gap-2 rounded-2xl border border-[#d5e8d1] bg-[#f6fbf3] p-2" aria-label="Navigasi flashcard">{flashNavItems.map(([href,text])=><a className="rounded-xl bg-white px-4 py-2 text-sm font-black text-[#176126] no-underline shadow-sm transition hover:bg-[#287b31] hover:text-white" href={href} key={href}>{text}</a>)}</nav><div className="grid grid-cols-2 gap-5 max-[760px]:grid-cols-1"><div id="flash-de-id" className="scroll-mt-24"><H3>🃏 Flashcard Jerman → Indonesia</H3><Flashcards direction="de-id" /></div><div id="flash-id-de" className="scroll-mt-24"><H3>🃏 Flashcard Indonesia → Jerman</H3><Flashcards direction="id-de" /></div><div id="mini-game" className="col-span-2 scroll-mt-24 max-[760px]:col-span-1"><H3>⚡ Mini Game</H3><MiniGame /></div></div></Section>
+  <Section id="exercises"><H2>9. ✏️ Latihan Soal — Übungen</H2>{quizGroups.map((group)=><div key={group.level}><H3>{group.title}</H3><p className="mb-2 text-[#647268]">{group.intro}</p>{quizzes.filter((quiz)=>quiz.level===group.level).map(q=><Quiz key={q.id} quiz={q} onAnswer={(id,ok)=>setAnswers(a=>({...a,[id]:ok}))}/>)}</div>)}<H3>Übung 4: Was machen Sie in dieser Situation?</H3><Box title="Lengkapi dengan ungkapan yang sesuai">{situationExercises.map(([situation, answer], index)=><div className="my-3 rounded-xl border border-[#d8e5d5] bg-white px-4 py-3" key={situation}><p className="font-bold text-[#223326]">{index + 1}. {situation}</p><p className="mt-1 text-[#176126]"><strong>Antwort:</strong> {answer}</p></div>)}</Box><div className="mt-6 text-center"><button className="inline-block cursor-pointer rounded-lg border-0 bg-[#2e7d32] px-8 py-3 text-[1.1em] text-white hover:bg-[#1b5e20]" onClick={()=>setShow(true)}>📊 Lihat Skor Total</button>{show && <div className="mt-4 text-[1.3em] font-bold text-[#2e7d32]">{scoreText}</div>}</div></Section>
+  <footer className="p-5 text-center text-[0.9em] text-[#888]">Materi Bahasa Jerman — Kapitel 5: Leben in der Stadt<br/>Update: 11 Mei 2026<br/>Viel Erfolg beim Lernen! 🍀</footer></main>;
 }
