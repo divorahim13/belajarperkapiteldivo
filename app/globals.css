@@ -60,6 +60,120 @@ input:focus-visible {
   outline-offset: 3px;
 }
 
+html[data-theme="dark"] body {
+  background:
+    radial-gradient(circle at top left, rgba(78, 178, 92, 0.18), transparent 34rem),
+    linear-gradient(180deg, #07130d 0%, #0d1c13 52%, #111a14 100%);
+  color: #e7f3e5;
+  color-scheme: dark;
+}
+
+.dark-page {
+  background: transparent !important;
+  color: #e7f3e5;
+}
+
+.dark-page header {
+  background: linear-gradient(135deg, #12471f 0%, #267531 100%) !important;
+  box-shadow: 0 20px 55px rgba(0, 0, 0, 0.34) !important;
+}
+
+.dark-page :is(section, nav) {
+  background: rgba(14, 31, 22, 0.94) !important;
+  border-color: #315b3d !important;
+  box-shadow: 0 18px 48px rgba(0, 0, 0, 0.24) !important;
+}
+
+.dark-page section :is(div, table, tbody, tr, td),
+.dark-page [class*="bg-white"] {
+  background-color: rgba(18, 39, 27, 0.92) !important;
+  border-color: #315b3d !important;
+}
+
+.dark-page button.group > span > span > span {
+  background:
+    radial-gradient(circle at 20% 15%, rgba(246, 195, 67, 0.14), transparent 28%),
+    linear-gradient(135deg, #102418 0%, #183824 100%) !important;
+  border-color: #4a7a52 !important;
+}
+
+.dark-page th {
+  background: #1f7a38 !important;
+  color: #f7fff6 !important;
+}
+
+.dark-page td,
+.dark-page p,
+.dark-page li,
+.dark-page label {
+  color: #e7f3e5 !important;
+}
+
+.dark-page input {
+  background: #0b1a12 !important;
+  border-color: #3b6847 !important;
+  color: #f2fff0 !important;
+}
+
+.dark-page input::placeholder {
+  color: #8ca18d;
+}
+
+.dark-page [class*="text-[#176126]"],
+.dark-page [class*="text-[#24742d]"],
+.dark-page [class*="text-[#1b5e20]"],
+.dark-page [class*="text-[#2e7d32]"] {
+  color: #9ee28e !important;
+}
+
+.dark-page [class*="text-[#223326]"],
+.dark-page [class*="text-[#445449]"],
+.dark-page [class*="text-[#382c10]"] {
+  color: #e7f3e5 !important;
+}
+
+.dark-page [class*="text-[#647268]"],
+.dark-page [class*="text-[#888]"],
+.dark-page [class*="text-[#9aa79d]"] {
+  color: #b4c8b4 !important;
+}
+
+.dark-page [class*="text-[#4a3b14]"] {
+  color: #f7df88 !important;
+}
+
+.dark-page [class*="text-[#6b2a72]"],
+.dark-page [class*="text-[#36233a]"] {
+  color: #efc4ff !important;
+}
+
+.dark-page .text-white,
+.dark-page [class~="text-white"] {
+  color: #ffffff !important;
+}
+
+.dark-page nav a:not([aria-current="page"]) {
+  background: #172b1d !important;
+  border: 1px solid #315b3d !important;
+  color: #bfe8b6 !important;
+}
+
+.dark-page nav a[aria-current="page"],
+.dark-page nav a[href="#"] {
+  background: #287b31 !important;
+  color: #ffffff !important;
+}
+
+.dark-page .theme-toggle {
+  background: #21311f !important;
+  border: 1px solid #61763b !important;
+  color: #ffe58a !important;
+}
+
+.dark-page button:disabled {
+  opacity: 0.58;
+}
+
 .flashcard-slide-next {
   animation: flashcard-slide-next 320ms ease-out;
   will-change: opacity, transform;
