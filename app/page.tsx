@@ -35,6 +35,18 @@ type PomodoroMode = "focus" | "break";
 type ThemeMode = "light" | "dark";
 type VocabCard = VocabItem & { group: string };
 
+type WritingCorrection = {
+  correctedText: string;
+  feedbackId: string;
+  strengths: string[];
+  corrections: {
+    original: string;
+    corrected: string;
+    reason: string;
+  }[];
+  nextPractice: string[];
+};
+
 const STORAGE_KEY = "deutsch-kapitel-6-progress-v1";
 const THEME_STORAGE_KEY = "deutsch-kapitel-6-theme-v1";
 const DEFAULT_FOCUS_MINUTES = 25;
@@ -60,6 +72,7 @@ const navItems = [
   ["#grammatik", "Grammatik"],
   ["#redemittel", "Redemittel"],
   ["#lesen", "Lesen"],
+  ["#schreiben", "Schreiben"],
   ["#training", "Training"],
 ];
 
@@ -92,6 +105,8 @@ const finishSignals = [
   "10 kosakata sudah dikunci",
   "minimal 2 quiz sudah dijawab",
 ];
+
+const umlautButtons = ["ä", "ö", "ü", "Ä", "Ö", "Ü", "ß"];
 
 function todayKey() {
   const now = new Date();
@@ -182,6 +197,10 @@ export default function Home() {
   const [search, setSearch] = useState("");
   const [cardIndex, setCardIndex] = useState(0);
   const [cardFlipped, setCardFlipped] = useState(false);
+  const [writingDraft, setWritingDraft] = useState("");
+  const [writingCorrection, setWritingCorrection] = useState<WritingCorrection | null>(null);
+  const [writingError, setWritingError] = useState("");
+  const [writingLoading, setWritingLoading] = useState(false);
   const [focusMinutes, setFocusMinutes] = useState(DEFAULT_FOCUS_MINUTES);
   const [breakMinutes, setBreakMinutes] = useState(DEFAULT_BREAK_MINUTES);
   const [pomodoroMode, setPomodoroMode] = useState<PomodoroMode>("focus");
@@ -193,6 +212,7 @@ export default function Home() {
     return Notification.permission;
   });
   const rewardCursor = useRef(0);
+  const writingRef = useRef<HTMLTextAreaElement | null>(null);
 
   const allWords = useMemo(
     () => vocabGroups.flatMap((group) => group.items.map((item) => ({ ...item, group: group.title }))),
@@ -310,6 +330,63 @@ export default function Home() {
 
   function toggleTheme() {
     setTheme((current) => (current === "dark" ? "light" : "dark"));
+  }
+
+  function insertUmlaut(character: string) {
+    const textarea = writingRef.current;
+
+    if (!textarea) {
+      setWritingDraft((current) => `${current}${character}`);
+      return;
+    }
+
+    const start = textarea.selectionStart;
+    const end = textarea.selectionEnd;
+    const nextValue = `${writingDraft.slice(0, start)}${character}${writingDraft.slice(end)}`;
+    setWritingDraft(nextValue);
+    setWritingCorrection(null);
+    setWritingError("");
+
+    window.requestAnimationFrame(() => {
+      textarea.focus();
+      const nextCursor = start + character.length;
+      textarea.setSelectionRange(nextCursor, nextCursor);
+    });
+  }
+
+  async function requestWritingCorrection() {
+    const text = writingDraft.trim();
+
+    if (!text) {
+      setWritingError("Tulis dulu 2 sampai 5 kalimat Jerman, baru minta koreksi.");
+      setWritingCorrection(null);
+      return;
+    }
+
+    setWritingLoading(true);
+    setWritingError("");
+    setWritingCorrection(null);
+
+    try {
+      const response = await fetch("/api/correct-writing", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ text }),
+      });
+      const data = (await response.json()) as Partial<WritingCorrection> & { error?: string };
+
+      if (!response.ok || data.error) {
+        setWritingError(data.error ?? "Koreksi AI belum bisa dipakai sekarang.");
+        return;
+      }
+
+      setWritingCorrection(data as WritingCorrection);
+      randomReward("Tulisan selesai dikoreksi");
+    } catch {
+      setWritingError("Koneksi ke koreksi AI gagal. Coba lagi sebentar.");
+    } finally {
+      setWritingLoading(false);
+    }
   }
 
   function toggleTask(id: string) {
@@ -800,6 +877,113 @@ export default function Home() {
                   <strong>{block.task}</strong>
                 </article>
               ))}
+            </div>
+          </section>
+
+          <section id="schreiben" className="section-panel writing-panel">
+            <div className="section-heading">
+              <p className="eyebrow">Schreiben</p>
+              <h2>Latihan tulisan + AI koreksi</h2>
+              <p>
+                Tulis jawaban pendek dalam bahasa Jerman. Pakai tombol umlaut kalau keyboard kamu belum nyaman,
+                lalu kirim untuk koreksi AI saat API key sudah aktif.
+              </p>
+            </div>
+
+            <div className="writing-grid">
+              <article className="writing-editor">
+                <label htmlFor="writing-practice">Form kosong latihan menulis</label>
+                <textarea
+                  id="writing-practice"
+                  ref={writingRef}
+                  placeholder="Contoh: Ich arbeite gern im Team. Am Wochenende lerne ich Deutsch, weil ich eine Ausbildung machen moechte."
+                  value={writingDraft}
+                  onInput={(event) => {
+                    setWritingDraft(event.currentTarget.value);
+                    setWritingCorrection(null);
+                    setWritingError("");
+                  }}
+                />
+
+                <div className="umlaut-toolbar" aria-label="Shortcut huruf Jerman">
+                  {umlautButtons.map((character) => (
+                    <button className="ghost-button" key={character} type="button" onClick={() => insertUmlaut(character)}>
+                      {character}
+                    </button>
+                  ))}
+                </div>
+
+                <div className="writing-actions">
+                  <span>{writingDraft.trim().length} karakter</span>
+                  <div className="button-row">
+                    <button className="ghost-button" type="button" onClick={() => setWritingDraft("")}>
+                      Kosongkan
+                    </button>
+                    <button className="primary-button" type="button" disabled={writingLoading} onClick={requestWritingCorrection}>
+                      {writingLoading ? "Mengoreksi..." : "Koreksi AI"}
+                    </button>
+                  </div>
+                </div>
+
+                {writingError ? <p className="writing-error">{writingError}</p> : null}
+              </article>
+
+              <article className="writing-feedback">
+                <div className="module-topline">
+                  <span>Feedback</span>
+                  <strong>{writingCorrection ? "Siap review" : "Menunggu tulisan"}</strong>
+                </div>
+
+                {writingCorrection ? (
+                  <div className="feedback-stack">
+                    <div className="feedback-block corrected">
+                      <span>Versi dikoreksi</span>
+                      <p>{writingCorrection.correctedText}</p>
+                    </div>
+
+                    <div className="feedback-block">
+                      <span>Catatan utama</span>
+                      <p>{writingCorrection.feedbackId}</p>
+                    </div>
+
+                    <div className="feedback-columns">
+                      <div>
+                        <h3>Yang sudah bagus</h3>
+                        <ul>
+                          {writingCorrection.strengths.map((item) => (
+                            <li key={item}>{item}</li>
+                          ))}
+                        </ul>
+                      </div>
+                      <div>
+                        <h3>Latihan berikutnya</h3>
+                        <ul>
+                          {writingCorrection.nextPractice.map((item) => (
+                            <li key={item}>{item}</li>
+                          ))}
+                        </ul>
+                      </div>
+                    </div>
+
+                    <div className="correction-list">
+                      {writingCorrection.corrections.map((item) => (
+                        <div className="correction-item" key={`${item.original}-${item.corrected}`}>
+                          <strong>{item.original}</strong>
+                          <span>{item.corrected}</span>
+                          <p>{item.reason}</p>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                ) : (
+                  <div className="empty-feedback">
+                    <h3>Mulai dari 2 sampai 5 kalimat</h3>
+                    <p>
+                      Coba tulis tentang pekerjaan, jadwal kereta, atau rencana Ausbildung. Koreksi AI nanti muncul di sini.
+                    </p>
+                  </div>
+                )}
+              </article>
             </div>
           </section>
 
