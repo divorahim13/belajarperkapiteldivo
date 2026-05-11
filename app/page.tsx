@@ -31,7 +31,13 @@ type Toast = {
   id: number;
 };
 
+type PomodoroMode = "focus" | "break";
+
 const STORAGE_KEY = "deutsch-kapitel-6-progress-v1";
+const DEFAULT_FOCUS_MINUTES = 25;
+const DEFAULT_BREAK_MINUTES = 5;
+const MIN_POMODORO_MINUTES = 1;
+const MAX_POMODORO_MINUTES = 90;
 
 const defaultProgress: ProgressState = {
   selectedChapter: "6",
@@ -137,6 +143,11 @@ function wordKey(item: VocabItem) {
   return item.de;
 }
 
+function clampPomodoroMinutes(value: number, fallback: number) {
+  if (!Number.isFinite(value)) return fallback;
+  return Math.min(MAX_POMODORO_MINUTES, Math.max(MIN_POMODORO_MINUTES, Math.round(value)));
+}
+
 export default function Home() {
   const [progress, setProgress] = useState<ProgressState>(() => {
     if (typeof window === "undefined") return defaultProgress;
@@ -147,8 +158,16 @@ export default function Home() {
   const [search, setSearch] = useState("");
   const [cardIndex, setCardIndex] = useState(0);
   const [cardFlipped, setCardFlipped] = useState(false);
-  const [timer, setTimer] = useState(120);
+  const [focusMinutes, setFocusMinutes] = useState(DEFAULT_FOCUS_MINUTES);
+  const [breakMinutes, setBreakMinutes] = useState(DEFAULT_BREAK_MINUTES);
+  const [pomodoroMode, setPomodoroMode] = useState<PomodoroMode>("focus");
+  const [timer, setTimer] = useState(DEFAULT_FOCUS_MINUTES * 60);
+  const [timerDuration, setTimerDuration] = useState(DEFAULT_FOCUS_MINUTES * 60);
   const [timerRunning, setTimerRunning] = useState(false);
+  const [notificationPermission, setNotificationPermission] = useState<NotificationPermission | "unsupported">(() => {
+    if (typeof window === "undefined" || !("Notification" in window)) return "unsupported";
+    return Notification.permission;
+  });
   const rewardCursor = useRef(0);
 
   const allWords = useMemo(
@@ -181,6 +200,20 @@ export default function Home() {
   const streak = calcStreak(progress.studyDays);
   const currentCard = filteredWords[Math.min(cardIndex, Math.max(filteredWords.length - 1, 0))];
   const nextTask = studyTasks.find((task) => !progress.completedTasks[task.id]);
+  const pomodoroProgress = percent(timerDuration - timer, timerDuration);
+  const pomodoroModeLabel = pomodoroMode === "focus" ? "Fokus" : "Istirahat";
+  const pomodoroHint =
+    pomodoroMode === "focus"
+      ? "Fokus ke satu task kecil. Saat selesai, timer otomatis pindah ke istirahat."
+      : "Istirahat dulu. Saat selesai, timer kembali ke sesi fokus.";
+  const notificationLabel =
+    notificationPermission === "granted"
+      ? "Notif aktif"
+      : notificationPermission === "denied"
+        ? "Notif diblokir"
+        : notificationPermission === "unsupported"
+          ? "Notif tidak tersedia"
+          : "Aktifkan notif";
 
   const showToast = useCallback((text: string) => {
     const id = Date.now();
@@ -188,6 +221,13 @@ export default function Home() {
     window.setTimeout(() => {
       setToast((current) => (current?.id === id ? null : current));
     }, 2600);
+  }, []);
+
+  const showPomodoroNotification = useCallback((title: string, body: string) => {
+    if (typeof window === "undefined" || !("Notification" in window)) return;
+    if (Notification.permission === "granted") {
+      new Notification(title, { body });
+    }
   }, []);
 
   useEffect(() => {
@@ -199,19 +239,30 @@ export default function Home() {
 
     const interval = window.setInterval(() => {
       setTimer((value) => {
-        if (value <= 1) {
-          window.clearInterval(interval);
-          setTimerRunning(false);
-          showToast("Sprint 2 menit selesai. Tandai satu tugas kecil sekarang.");
-          return 0;
-        }
+        if (value > 1) return value - 1;
 
-        return value - 1;
+        window.clearInterval(interval);
+
+        const completedMode = pomodoroMode;
+        const nextMode: PomodoroMode = completedMode === "focus" ? "break" : "focus";
+        const nextDuration = (nextMode === "focus" ? focusMinutes : breakMinutes) * 60;
+        const message =
+          completedMode === "focus"
+            ? "Sesi fokus selesai. Waktunya istirahat."
+            : "Istirahat selesai. Siap fokus lagi.";
+
+        setTimerRunning(false);
+        setPomodoroMode(nextMode);
+        setTimerDuration(nextDuration);
+        showToast(message);
+        showPomodoroNotification(completedMode === "focus" ? "Fokus selesai" : "Istirahat selesai", message);
+
+        return nextDuration;
       });
     }, 1000);
 
     return () => window.clearInterval(interval);
-  }, [showToast, timerRunning]);
+  }, [breakMinutes, focusMinutes, pomodoroMode, showPomodoroNotification, showToast, timerRunning]);
 
   function randomReward(prefix: string) {
     rewardCursor.current = (rewardCursor.current + 1) % rewardLines.length;
@@ -269,8 +320,53 @@ export default function Home() {
     setChallengeIndex((value) => (value + 1) % microChallenges.length);
   }
 
+  function updatePomodoroMinutes(mode: PomodoroMode, value: number) {
+    const fallback = mode === "focus" ? DEFAULT_FOCUS_MINUTES : DEFAULT_BREAK_MINUTES;
+    const minutes = clampPomodoroMinutes(value, fallback);
+
+    if (mode === "focus") {
+      setFocusMinutes(minutes);
+    } else {
+      setBreakMinutes(minutes);
+    }
+
+    if (!timerRunning && pomodoroMode === mode) {
+      const duration = minutes * 60;
+      setTimer(duration);
+      setTimerDuration(duration);
+    }
+  }
+
+  function switchPomodoroMode(mode: PomodoroMode) {
+    const duration = (mode === "focus" ? focusMinutes : breakMinutes) * 60;
+    setPomodoroMode(mode);
+    setTimer(duration);
+    setTimerDuration(duration);
+    setTimerRunning(false);
+  }
+
+  function skipPomodoroMode() {
+    const nextMode: PomodoroMode = pomodoroMode === "focus" ? "break" : "focus";
+    switchPomodoroMode(nextMode);
+    showToast(nextMode === "break" ? "Pindah ke istirahat." : "Pindah ke fokus.");
+  }
+
+  async function requestPomodoroNotifications() {
+    if (typeof window === "undefined" || !("Notification" in window)) {
+      setNotificationPermission("unsupported");
+      showToast("Notifikasi browser tidak tersedia di perangkat ini.");
+      return;
+    }
+
+    const permission = await Notification.requestPermission();
+    setNotificationPermission(permission);
+    showToast(permission === "granted" ? "Notifikasi Pomodoro aktif." : "Notifikasi belum aktif.");
+  }
+
   function resetTimer() {
-    setTimer(120);
+    const duration = (pomodoroMode === "focus" ? focusMinutes : breakMinutes) * 60;
+    setTimer(duration);
+    setTimerDuration(duration);
     setTimerRunning(false);
   }
 
@@ -392,19 +488,67 @@ export default function Home() {
             </div>
 
             <div className="habit-row">
-              <div className="focus-box">
-                <span className="timer">{formatTimer(timer)}</span>
-                <div>
-                  <h3>2-Minuten-Start</h3>
-                  <p>Mulai dari durasi yang terlalu kecil untuk ditolak.</p>
+              <div className={`focus-box pomodoro-box ${pomodoroMode === "break" ? "break-mode" : ""}`}>
+                <div className="pomodoro-clock" aria-live="polite">
+                  <span>{pomodoroModeLabel}</span>
+                  <strong>{formatTimer(timer)}</strong>
+                  <div className="bar-track pomodoro-track" aria-label={`Pomodoro ${pomodoroProgress}%`}>
+                    <span style={{ width: `${pomodoroProgress}%` }} />
+                  </div>
                 </div>
-                <div className="button-row">
-                  <button className="primary-button" type="button" onClick={() => setTimerRunning((value) => !value)}>
-                    {timerRunning ? "Pause" : "Start"}
-                  </button>
-                  <button className="ghost-button" type="button" onClick={resetTimer}>
-                    Reset
-                  </button>
+
+                <div className="pomodoro-content">
+                  <div>
+                    <h3>Pomodoro custom</h3>
+                    <p>{pomodoroHint}</p>
+                  </div>
+
+                  <div className="pomodoro-settings" aria-label="Pengaturan Pomodoro">
+                    <label>
+                      <span>Fokus</span>
+                      <input
+                        aria-label="Durasi fokus dalam menit"
+                        max={MAX_POMODORO_MINUTES}
+                        min={MIN_POMODORO_MINUTES}
+                        type="number"
+                        value={focusMinutes}
+                        onChange={(event) => updatePomodoroMinutes("focus", event.currentTarget.valueAsNumber)}
+                      />
+                      <em>menit</em>
+                    </label>
+                    <label>
+                      <span>Istirahat</span>
+                      <input
+                        aria-label="Durasi istirahat dalam menit"
+                        max={MAX_POMODORO_MINUTES}
+                        min={MIN_POMODORO_MINUTES}
+                        type="number"
+                        value={breakMinutes}
+                        onChange={(event) => updatePomodoroMinutes("break", event.currentTarget.valueAsNumber)}
+                      />
+                      <em>menit</em>
+                    </label>
+                  </div>
+
+                  <div className="button-row">
+                    <button className="primary-button" type="button" onClick={() => setTimerRunning((value) => !value)}>
+                      {timerRunning ? "Pause" : "Start"}
+                    </button>
+                    <button className="ghost-button" type="button" onClick={resetTimer}>
+                      Reset
+                    </button>
+                    <button className="ghost-button" type="button" onClick={skipPomodoroMode}>
+                      {pomodoroMode === "focus" ? "Istirahat" : "Fokus"}
+                    </button>
+                    <button
+                      className="ghost-button"
+                      disabled={notificationPermission === "granted" || notificationPermission === "unsupported"}
+                      type="button"
+                      onClick={requestPomodoroNotifications}
+                    >
+                      {notificationLabel}
+                    </button>
+                  </div>
                 </div>
               </div>
 

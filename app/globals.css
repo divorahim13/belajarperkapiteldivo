@@ -387,6 +387,11 @@ section[id] {
   color: var(--green-dark);
 }
 
+.ghost-button:disabled {
+  cursor: default;
+  opacity: 0.62;
+}
+
 .done-button {
   background: var(--amber-soft);
   color: #7b5417;
@@ -425,7 +430,7 @@ section[id] {
 }
 
 .habit-row {
-  grid-template-columns: repeat(2, minmax(0, 1fr));
+  grid-template-columns: minmax(0, 1.35fr) minmax(280px, 0.65fr);
   margin-bottom: 14px;
 }
 
@@ -440,6 +445,92 @@ section[id] {
 
 .focus-box.accent {
   background: var(--amber-soft);
+}
+
+.pomodoro-box {
+  grid-template-columns: 1fr;
+  align-items: stretch;
+}
+
+.pomodoro-box.break-mode {
+  background: var(--mint);
+}
+
+.pomodoro-clock {
+  display: grid;
+  grid-template-columns: auto auto minmax(0, 1fr);
+  gap: 12px;
+  align-items: center;
+  border-radius: 18px;
+  background: white;
+  padding: 16px;
+  text-align: left;
+}
+
+.pomodoro-clock > span {
+  color: var(--muted);
+  font-size: 0.78rem;
+  font-weight: 900;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.pomodoro-clock > strong {
+  color: var(--blue);
+  font-size: clamp(2.15rem, 5vw, 3.4rem);
+  line-height: 1;
+}
+
+.pomodoro-track {
+  height: 8px;
+}
+
+.pomodoro-content {
+  display: grid;
+  gap: 12px;
+  align-content: center;
+}
+
+.pomodoro-content p {
+  margin-bottom: 0;
+  color: var(--muted);
+}
+
+.pomodoro-settings {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 10px;
+}
+
+.pomodoro-settings label {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 74px auto;
+  gap: 8px;
+  align-items: center;
+  border: 1px solid rgba(49, 95, 134, 0.16);
+  border-radius: 14px;
+  background: rgba(255, 255, 255, 0.72);
+  padding: 10px;
+}
+
+.pomodoro-settings label > span,
+.pomodoro-settings em {
+  color: var(--muted);
+  font-size: 0.82rem;
+  font-style: normal;
+  font-weight: 800;
+}
+
+.pomodoro-settings input {
+  width: 100%;
+  min-height: 38px;
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  background: white;
+  color: var(--ink);
+  font-weight: 900;
+  padding: 0 8px;
+  text-align: center;
 }
 
 .timer {
@@ -856,6 +947,15 @@ section[id] {
 
   .focus-box {
     grid-template-columns: 1fr;
+  }
+
+  .pomodoro-clock,
+  .pomodoro-settings {
+    grid-template-columns: 1fr;
+  }
+
+  .pomodoro-clock {
+    text-align: center;
   }
 
   .timer {
