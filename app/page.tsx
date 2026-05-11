@@ -44,6 +44,7 @@ const defaultProgress: ProgressState = {
 
 const navItems = [
   ["#home", "Home"],
+  ["#mulai", "Mulai"],
   ["#plan", "Plan"],
   ["#gallery", "Gambar"],
   ["#wortschatz", "Wortschatz"],
@@ -51,6 +52,36 @@ const navItems = [
   ["#redemittel", "Redemittel"],
   ["#lesen", "Lesen"],
   ["#training", "Training"],
+];
+
+const startSteps = [
+  {
+    label: "1",
+    title: "Baca halaman 64-65",
+    text: "Buka Galeri, lihat gambar awal Kapitel 6, lalu tandai halaman yang sudah kamu baca.",
+  },
+  {
+    label: "2",
+    title: "Kerjakan checklist pertama",
+    text: "Masuk ke Checklist belajar dan selesaikan task paling atas. Jangan lompat jauh dulu.",
+  },
+  {
+    label: "3",
+    title: "Kunci 10 kata",
+    text: "Buka Wortschatz, cari kata yang sering muncul, lalu klik Kunci kalau kamu sudah paham.",
+  },
+  {
+    label: "4",
+    title: "Tutup dengan quiz",
+    text: "Jawab 2 sampai 3 quiz. Kalau salah, baca penjelasannya dan ulangi besok.",
+  },
+];
+
+const finishSignals = [
+  "2 halaman gambar sudah ditandai selesai",
+  "1 checklist sudah dicentang",
+  "10 kosakata sudah dikunci",
+  "minimal 2 quiz sudah dijawab",
 ];
 
 function todayKey() {
@@ -310,6 +341,39 @@ export default function Home() {
 
       {progress.selectedChapter === "6" ? (
         <>
+          <section id="mulai" className="section-panel guide-panel">
+            <div className="section-heading">
+              <p className="eyebrow">Mulai dari sini</p>
+              <h2>Kamu disuruh melakukan ini hari ini</h2>
+              <p>
+                Jangan baca semua halaman sekaligus. Ikuti satu putaran kecil ini dulu supaya belajar terasa jelas,
+                selesai, dan bisa diulang besok.
+              </p>
+            </div>
+
+            <div className="start-grid">
+              {startSteps.map((step) => (
+                <article className="start-card" key={step.label}>
+                  <span>{step.label}</span>
+                  <h3>{step.title}</h3>
+                  <p>{step.text}</p>
+                </article>
+              ))}
+            </div>
+
+            <div className="finish-box">
+              <div>
+                <p className="eyebrow">Target sesi pertama</p>
+                <h3>Sesi dianggap selesai kalau:</h3>
+              </div>
+              <ul>
+                {finishSignals.map((signal) => (
+                  <li key={signal}>{signal}</li>
+                ))}
+              </ul>
+            </div>
+          </section>
+
           <section id="plan" className="section-panel">
             <div className="section-heading">
               <p className="eyebrow">Kapitel 6</p>
@@ -379,7 +443,7 @@ export default function Home() {
             <div className="section-heading">
               <p className="eyebrow">Tracking</p>
               <h2>Checklist belajar</h2>
-              <p>{nextTask ? `Next tiny action: ${nextTask.label}` : "Semua task utama selesai. Saatnya review dan ulangi quiz."}</p>
+              <p>{nextTask ? `Langkah kecil berikutnya: ${nextTask.label}` : "Semua task utama selesai. Saatnya review dan ulangi quiz."}</p>
             </div>
 
             <div className="task-list">

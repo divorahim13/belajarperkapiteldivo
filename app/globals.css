@@ -235,6 +235,10 @@ h3 {
   border-radius: 22px;
 }
 
+section[id] {
+  scroll-margin-top: 86px;
+}
+
 .section-heading {
   max-width: 850px;
   margin-bottom: 18px;
@@ -242,6 +246,63 @@ h3 {
 
 .section-heading p:not(.eyebrow) {
   color: var(--muted);
+}
+
+.guide-panel {
+  background:
+    linear-gradient(180deg, rgba(255, 255, 255, 0.96), rgba(247, 250, 246, 0.98)),
+    var(--panel);
+}
+
+.start-grid {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 12px;
+  margin-bottom: 14px;
+}
+
+.start-card,
+.finish-box {
+  border: 1px solid var(--line);
+  border-radius: 16px;
+  background: var(--panel-soft);
+  padding: 16px;
+}
+
+.start-card span {
+  display: grid;
+  width: 42px;
+  height: 42px;
+  place-items: center;
+  margin-bottom: 12px;
+  border-radius: 12px;
+  background: var(--green);
+  color: white;
+  font-weight: 950;
+}
+
+.start-card p {
+  margin-bottom: 0;
+  color: var(--muted);
+}
+
+.finish-box {
+  display: grid;
+  grid-template-columns: minmax(220px, 0.72fr) minmax(0, 1.28fr);
+  gap: 16px;
+  align-items: start;
+  background: var(--blue-soft);
+}
+
+.finish-box h3 {
+  margin-bottom: 0;
+}
+
+.finish-box ul {
+  display: grid;
+  gap: 8px;
+  margin: 0;
+  padding-left: 19px;
 }
 
 .chapter-grid,
@@ -744,6 +805,14 @@ h3 {
     grid-template-columns: 1fr;
   }
 
+  .start-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .finish-box {
+    grid-template-columns: 1fr;
+  }
+
   .chapter-grid {
     grid-template-columns: repeat(3, minmax(0, 1fr));
   }
@@ -778,6 +847,7 @@ h3 {
   }
 
   .dashboard-grid,
+  .start-grid,
   .chapter-grid,
   .module-grid,
   .gallery-grid {
