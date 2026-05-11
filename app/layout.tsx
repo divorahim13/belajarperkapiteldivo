@@ -2,8 +2,8 @@
 import "./globals.css";
 
 export const metadata: Metadata = {
-  title: "Materi Bahasa Jerman - Leben in der Stadt",
-  description: "Materi Lengkap Bahasa Jerman — Hidup di Kota",
+  title: "Deutsch Lernen - Kapitel 6 Arbeitswelten",
+  description: "Home belajar Bahasa Jerman A2 dengan progress tracking untuk Kapitel 6 Arbeitswelten.",
 };
 
 export default function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {
