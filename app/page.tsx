@@ -212,7 +212,7 @@ export default function Home() {
       : notificationPermission === "denied"
         ? "Notif diblokir"
         : notificationPermission === "unsupported"
-          ? "Notif tidak tersedia"
+          ? "Notif app aktif"
           : "Aktifkan notif";
 
   const showToast = useCallback((text: string) => {
