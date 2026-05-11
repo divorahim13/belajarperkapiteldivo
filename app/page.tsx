@@ -106,6 +106,21 @@ const finishSignals = [
   "minimal 2 quiz sudah dijawab",
 ];
 
+const grammarSteps = [
+  {
+    title: "1. Baca fungsi",
+    text: "Pahami dulu aturan ini dipakai untuk apa, bukan langsung menghafal tabel.",
+  },
+  {
+    title: "2. Lihat pola",
+    text: "Bandingkan baris contoh dari kiri ke kanan sampai perubahan akhir katanya terlihat.",
+  },
+  {
+    title: "3. Pakai sendiri",
+    text: "Tulis 3 kalimat baru, lalu cek di bagian Schreiben kalau API key sudah aktif.",
+  },
+];
+
 const umlautButtons = ["ä", "ö", "ü", "Ä", "Ö", "Ü", "ß"];
 
 function todayKey() {
@@ -806,29 +821,66 @@ export default function Home() {
             <div className="section-heading">
               <p className="eyebrow">Grammatik</p>
               <h2>Aturan inti Kapitel 6</h2>
-              <p>Fokus utamanya Adjektivendungen, werden, wenn-Saetze, permintaan sopan, dan Aussprache m/n.</p>
+              <p>
+                Bagian ini dibuat seperti catatan belajar: mulai dari fungsi, baca pola, lalu langsung pakai
+                dalam contoh kalimat.
+              </p>
+            </div>
+
+            <div className="grammar-study-flow" aria-label="Cara membaca grammar">
+              {grammarSteps.map((step) => (
+                <article key={step.title}>
+                  <strong>{step.title}</strong>
+                  <p>{step.text}</p>
+                </article>
+              ))}
             </div>
 
             <div className="grammar-grid">
-              {grammarBlocks.map((block) => (
+              {grammarBlocks.map((block, index) => (
                 <article className="grammar-card" key={block.title}>
-                  <h3>{block.title}</h3>
-                  <p>{block.rule}</p>
-                  <div className="mini-table">
-                    {block.rows.map((row) => (
-                      <div className="mini-row" key={row.join("-")}>
-                        {row.map((cell, index) => (
-                          <span key={`${cell}-${index}`}>{cell}</span>
-                        ))}
-                      </div>
-                    ))}
+                  <div className="grammar-card-header">
+                    <span>{String(index + 1).padStart(2, "0")}</span>
+                    <div>
+                      <h3>{block.title}</h3>
+                      <p>{block.rule}</p>
+                    </div>
                   </div>
-                  <ul className="example-list">
-                    {block.examples.map((example) => (
-                      <li key={example}>{example}</li>
-                    ))}
-                  </ul>
-                  {block.trap ? <p className="trap">{block.trap}</p> : null}
+
+                  <div className="grammar-section">
+                    <h4>Pola yang perlu dilihat</h4>
+                    <div className="grammar-patterns">
+                      {block.rows.map((row) => (
+                        <div className="grammar-pattern-row" key={row.join("-")}>
+                          <strong>{row[0]}</strong>
+                          <div>
+                            {row.slice(1).map((cell, cellIndex) => (
+                              <code key={`${cell}-${cellIndex}`}>{cell}</code>
+                            ))}
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+
+                  <div className="grammar-section">
+                    <h4>Contoh pakai</h4>
+                    <div className="grammar-example-list">
+                      {block.examples.map((example) => (
+                        <div className="grammar-example" key={example}>
+                          <span>Beispiel</span>
+                          <p>{example}</p>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+
+                  {block.trap ? (
+                    <div className="trap">
+                      <strong>Hati-hati</strong>
+                      <p>{block.trap}</p>
+                    </div>
+                  ) : null}
                 </article>
               ))}
             </div>
