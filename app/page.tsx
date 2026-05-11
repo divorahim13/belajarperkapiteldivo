@@ -180,14 +180,14 @@ function flashcardExample(item: VocabCard) {
   if (item.example) return item.example;
 
   const groupExamples: Record<string, string> = {
-    "Taetigkeiten im Beruf": "Im Buero organisiere ich Termine und berate Kunden.",
-    "Bahnreisen und Bahnhof": "Am Bahnhof frage ich: Wann faehrt der naechste Zug?",
-    "Stadtprogramm und Freizeitangebote": "Heute Abend suchen wir ein guenstiges Konzert.",
-    "Beruf wechseln und Traumberuf": "Spaeter moechte ich einen neuen Beruf lernen.",
-    Telefonieren: "Ich moechte eine Nachricht hinterlassen.",
+    "Tätigkeiten im Beruf": "Im Büro organisiere ich Termine und berate Kunden.",
+    "Bahnreisen und Bahnhof": "Am Bahnhof frage ich: Wann fährt der nächste Zug?",
+    "Stadtprogramm und Freizeitangebote": "Heute Abend suchen wir ein günstiges Konzert.",
+    "Beruf wechseln und Traumberuf": "Später möchte ich einen neuen Beruf lernen.",
+    Telefonieren: "Ich möchte eine Nachricht hinterlassen.",
     "Die moderne Arbeitswelt": "Im modernen Betrieb arbeiten viele Teams digital.",
-    "Feste in D-A-CH": "An Weihnachten schmuecken viele Familien den Baum.",
-    "Andere wichtige Woerter": "Also gut, der naechste Schritt ist klar.",
+    "Feste in D-A-CH": "An Weihnachten schmücken viele Familien den Baum.",
+    "Andere wichtige Wörter": "Also gut, der nächste Schritt ist klar.",
   };
 
   return groupExamples[item.group] ?? `Ich benutze "${item.de}" in einem kurzen Satz.`;
@@ -948,7 +948,7 @@ export default function Home() {
                 <textarea
                   id="writing-practice"
                   ref={writingRef}
-                  placeholder="Contoh: Ich arbeite gern im Team. Am Wochenende lerne ich Deutsch, weil ich eine Ausbildung machen moechte."
+                  placeholder="Contoh: Ich arbeite gern im Team. Am Wochenende lerne ich Deutsch, weil ich eine Ausbildung machen möchte."
                   value={writingDraft}
                   onInput={(event) => {
                     setWritingDraft(event.currentTarget.value);
