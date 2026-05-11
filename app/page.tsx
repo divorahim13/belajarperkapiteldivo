@@ -32,8 +32,11 @@ type Toast = {
 };
 
 type PomodoroMode = "focus" | "break";
+type ThemeMode = "light" | "dark";
+type VocabCard = VocabItem & { group: string };
 
 const STORAGE_KEY = "deutsch-kapitel-6-progress-v1";
+const THEME_STORAGE_KEY = "deutsch-kapitel-6-theme-v1";
 const DEFAULT_FOCUS_MINUTES = 25;
 const DEFAULT_BREAK_MINUTES = 5;
 const MIN_POMODORO_MINUTES = 1;
@@ -143,6 +146,23 @@ function wordKey(item: VocabItem) {
   return item.de;
 }
 
+function flashcardExample(item: VocabCard) {
+  if (item.example) return item.example;
+
+  const groupExamples: Record<string, string> = {
+    "Taetigkeiten im Beruf": "Im Buero organisiere ich Termine und berate Kunden.",
+    "Bahnreisen und Bahnhof": "Am Bahnhof frage ich: Wann faehrt der naechste Zug?",
+    "Stadtprogramm und Freizeitangebote": "Heute Abend suchen wir ein guenstiges Konzert.",
+    "Beruf wechseln und Traumberuf": "Spaeter moechte ich einen neuen Beruf lernen.",
+    Telefonieren: "Ich moechte eine Nachricht hinterlassen.",
+    "Die moderne Arbeitswelt": "Im modernen Betrieb arbeiten viele Teams digital.",
+    "Feste in D-A-CH": "An Weihnachten schmuecken viele Familien den Baum.",
+    "Andere wichtige Woerter": "Also gut, der naechste Schritt ist klar.",
+  };
+
+  return groupExamples[item.group] ?? `Ich benutze "${item.de}" in einem kurzen Satz.`;
+}
+
 function clampPomodoroMinutes(value: number, fallback: number) {
   if (!Number.isFinite(value)) return fallback;
   return Math.min(MAX_POMODORO_MINUTES, Math.max(MIN_POMODORO_MINUTES, Math.round(value)));
@@ -154,6 +174,10 @@ export default function Home() {
     return mergeProgress(window.localStorage.getItem(STORAGE_KEY));
   });
   const [toast, setToast] = useState<Toast | null>(null);
+  const [theme, setTheme] = useState<ThemeMode>(() => {
+    if (typeof window === "undefined") return "light";
+    return window.localStorage.getItem(THEME_STORAGE_KEY) === "dark" ? "dark" : "light";
+  });
   const [challengeIndex, setChallengeIndex] = useState(0);
   const [search, setSearch] = useState("");
   const [cardIndex, setCardIndex] = useState(0);
@@ -181,6 +205,7 @@ export default function Home() {
     return allWords.filter((item) => `${item.de} ${item.id} ${item.group}`.toLowerCase().includes(query));
   }, [allWords, search]);
 
+  const darkMode = theme === "dark";
   const taskCount = studyTasks.length;
   const completedTasks = studyTasks.filter((task) => progress.completedTasks[task.id]).length;
   const pagesDone = pageImages.filter((page) => progress.pagesRead[String(page.page)]).length;
@@ -235,6 +260,11 @@ export default function Home() {
   }, [progress]);
 
   useEffect(() => {
+    document.documentElement.dataset.theme = theme;
+    window.localStorage.setItem(THEME_STORAGE_KEY, theme);
+  }, [theme]);
+
+  useEffect(() => {
     if (!timerRunning) return;
 
     const interval = window.setInterval(() => {
@@ -276,6 +306,10 @@ export default function Home() {
 
   function selectChapter(id: string) {
     setProgress((previous) => ({ ...previous, selectedChapter: id }));
+  }
+
+  function toggleTheme() {
+    setTheme((current) => (current === "dark" ? "light" : "dark"));
   }
 
   function toggleTask(id: string) {
@@ -398,6 +432,9 @@ export default function Home() {
             {label}
           </a>
         ))}
+        <button className="theme-toggle" type="button" aria-pressed={darkMode} onClick={toggleTheme}>
+          {darkMode ? "Light mode" : "Dark mode"}
+        </button>
       </nav>
 
       <section className="section-panel">
@@ -781,9 +818,28 @@ export default function Home() {
                 </div>
                 {currentCard ? (
                   <>
-                    <button className={`flashcard ${cardFlipped ? "flipped" : ""}`} type="button" onClick={() => setCardFlipped((value) => !value)}>
-                      <span>{cardFlipped ? currentCard.id : currentCard.de}</span>
-                      <em>{cardFlipped ? currentCard.de : "Balik kartu"}</em>
+                    <button
+                      className={`flashcard ${cardFlipped ? "flipped" : ""}`}
+                      type="button"
+                      aria-pressed={cardFlipped}
+                      onClick={() => setCardFlipped((value) => !value)}
+                    >
+                      <span className="flashcard-inner">
+                        <span className="flashcard-face flashcard-front">
+                          <span className="flashcard-kicker">{currentCard.group}</span>
+                          <strong>{currentCard.de}</strong>
+                          <em>Klik untuk lihat arti dan contoh</em>
+                        </span>
+                        <span className="flashcard-face flashcard-back">
+                          <span className="flashcard-kicker">Arti Indonesia</span>
+                          <strong>{currentCard.id}</strong>
+                          <span className="flashcard-example">
+                            <small>Contoh</small>
+                            <span>{flashcardExample(currentCard)}</span>
+                          </span>
+                          <em>{currentCard.de}</em>
+                        </span>
+                      </span>
                     </button>
                     <div className="button-row">
                       <button
