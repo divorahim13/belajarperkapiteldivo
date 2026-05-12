@@ -216,6 +216,8 @@ export default function Home() {
   const [writingCorrection, setWritingCorrection] = useState<WritingCorrection | null>(null);
   const [writingError, setWritingError] = useState("");
   const [writingLoading, setWritingLoading] = useState(false);
+  const [grammarQuizAnswers, setGrammarQuizAnswers] = useState<Record<number, number>>({});
+  const [expandedGrammarZones, setExpandedGrammarZones] = useState<Record<string, boolean>>({});
   const [focusMinutes, setFocusMinutes] = useState(DEFAULT_FOCUS_MINUTES);
   const [breakMinutes, setBreakMinutes] = useState(DEFAULT_BREAK_MINUTES);
   const [pomodoroMode, setPomodoroMode] = useState<PomodoroMode>("focus");
@@ -822,8 +824,8 @@ export default function Home() {
               <p className="eyebrow">Grammatik</p>
               <h2>Aturan inti Kapitel 6</h2>
               <p>
-                Bagian ini dibuat seperti catatan belajar: mulai dari fungsi, baca pola, lalu langsung pakai
-                dalam contoh kalimat.
+                Setiap aturan grammar dipecah jadi 6 zona belajar: pahami dulu konsepnya, lihat kapan dipakai,
+                pelajari pola, baca contoh bilingual, waspadai jebakan, lalu uji pemahamanmu.
               </p>
             </div>
 
@@ -837,52 +839,158 @@ export default function Home() {
             </div>
 
             <div className="grammar-grid">
-              {grammarBlocks.map((block, index) => (
-                <article className="grammar-card" key={block.title}>
-                  <div className="grammar-card-header">
-                    <span>{String(index + 1).padStart(2, "0")}</span>
-                    <div>
-                      <h3>{block.title}</h3>
-                      <p>{block.rule}</p>
-                    </div>
-                  </div>
+              {grammarBlocks.map((block, index) => {
+                const quizAnswer = grammarQuizAnswers[index];
+                const quizAnswered = quizAnswer !== undefined;
+                const quizCorrect = block.miniQuiz ? quizAnswer === block.miniQuiz.answer : false;
 
-                  <div className="grammar-section">
-                    <h4>Pola yang perlu dilihat</h4>
-                    <div className="grammar-patterns">
-                      {block.rows.map((row) => (
-                        <div className="grammar-pattern-row" key={row.join("-")}>
-                          <strong>{row[0]}</strong>
-                          <div>
-                            {row.slice(1).map((cell, cellIndex) => (
-                              <code key={`${cell}-${cellIndex}`}>{cell}</code>
-                            ))}
+                return (
+                  <article className="grammar-card" key={block.title}>
+                    {/* ── Header ── */}
+                    <div className="grammar-card-header">
+                      <span className="grammar-emoji">{block.emoji}</span>
+                      <span>{String(index + 1).padStart(2, "0")}</span>
+                      <div>
+                        <h3>{block.title}</h3>
+                        <p>{block.rule}</p>
+                      </div>
+                    </div>
+
+                    {/* ── Zona 1: Apa Itu? ── */}
+                    <div className="grammar-zone">
+                      <div className="grammar-zone-header">
+                        <span className="zone-icon">💡</span>
+                        <h4>Apa itu?</h4>
+                      </div>
+                      <p className="grammar-what-is">{block.whatIs}</p>
+                    </div>
+
+                    {/* ── Zona 2: Kapan Dipakai? ── */}
+                    <div className="grammar-zone">
+                      <div className="grammar-zone-header">
+                        <span className="zone-icon">🕐</span>
+                        <h4>Kapan dipakai?</h4>
+                      </div>
+                      <div className="grammar-when-list">
+                        {block.whenToUse.map((item) => (
+                          <div className="grammar-when-item" key={item}>
+                            <span className="when-dot" />
+                            <p>{item}</p>
                           </div>
-                        </div>
-                      ))}
+                        ))}
+                      </div>
                     </div>
-                  </div>
 
-                  <div className="grammar-section">
-                    <h4>Contoh pakai</h4>
-                    <div className="grammar-example-list">
-                      {block.examples.map((example) => (
-                        <div className="grammar-example" key={example}>
-                          <span>Beispiel</span>
-                          <p>{example}</p>
-                        </div>
-                      ))}
+                    {/* ── Zona 3: Pola & Tabel ── */}
+                    <div className="grammar-zone">
+                      <div className="grammar-zone-header">
+                        <span className="zone-icon">📋</span>
+                        <h4>Pola & tabel</h4>
+                      </div>
+                      <div className="grammar-patterns">
+                        {block.rows.map((row) => (
+                          <div className={`grammar-pattern-row ${row[0] === "Nominativ" ? "kasus-nom" : ""} ${row[0] === "Akkusativ" ? "kasus-akk" : ""} ${row[0] === "Dativ" ? "kasus-dat" : ""}`} key={row.join("-")}>
+                            <strong>{row[0]}</strong>
+                            <div>
+                              {row.slice(1).map((cell, cellIndex) => (
+                                <code key={`${cell}-${cellIndex}`}>{cell}</code>
+                              ))}
+                            </div>
+                          </div>
+                        ))}
+                      </div>
                     </div>
-                  </div>
 
-                  {block.trap ? (
-                    <div className="trap">
-                      <strong>Hati-hati</strong>
-                      <p>{block.trap}</p>
+                    {/* ── Zona 4: Contoh Bilingual ── */}
+                    <div className="grammar-zone">
+                      <div className="grammar-zone-header">
+                        <span className="zone-icon">📝</span>
+                        <h4>Contoh pakai</h4>
+                      </div>
+                      <div className="grammar-example-list">
+                        {block.examples.map((example, exIndex) => (
+                          <div className="grammar-bilingual" key={example}>
+                            <div className="bilingual-de">
+                              <span>DE</span>
+                              <p>{example}</p>
+                            </div>
+                            {block.exampleTranslations[exIndex] ? (
+                              <div className="bilingual-id">
+                                <span>ID</span>
+                                <p>{block.exampleTranslations[exIndex]}</p>
+                              </div>
+                            ) : null}
+                          </div>
+                        ))}
+                      </div>
                     </div>
-                  ) : null}
-                </article>
-              ))}
+
+                    {/* ── Zona 5: Hati-hati + Solusi ── */}
+                    {block.trap ? (
+                      <div className="grammar-zone">
+                        <div className="grammar-zone-header">
+                          <span className="zone-icon">⚠️</span>
+                          <h4>Hati-hati!</h4>
+                        </div>
+                        <div className="grammar-trap-fix">
+                          <div className="trap-problem">
+                            <span>Masalah</span>
+                            <p>{block.trap}</p>
+                          </div>
+                          {block.trapFix ? (
+                            <div className="trap-solution">
+                              <span>Solusi</span>
+                              <p>{block.trapFix}</p>
+                            </div>
+                          ) : null}
+                        </div>
+                      </div>
+                    ) : null}
+
+                    {/* ── Zona 6: Mini Quiz ── */}
+                    {block.miniQuiz ? (
+                      <div className="grammar-zone">
+                        <div className="grammar-zone-header">
+                          <span className="zone-icon">🧪</span>
+                          <h4>Cek pemahaman</h4>
+                        </div>
+                        <div className="grammar-mini-quiz">
+                          <p className="mini-quiz-question">{block.miniQuiz.question}</p>
+                          <div className="mini-quiz-choices">
+                            {block.miniQuiz.choices.map((choice, choiceIndex) => {
+                              const isSelected = quizAnswer === choiceIndex;
+                              const isCorrectChoice = block.miniQuiz!.answer === choiceIndex;
+                              return (
+                                <button
+                                  className={`${isSelected ? "selected" : ""} ${quizAnswered && isCorrectChoice ? "correct" : ""} ${quizAnswered && isSelected && !isCorrectChoice ? "wrong" : ""}`}
+                                  key={choice}
+                                  type="button"
+                                  onClick={() => setGrammarQuizAnswers((prev) => ({ ...prev, [index]: choiceIndex }))}
+                                >
+                                  <span className="choice-letter">{String.fromCharCode(65 + choiceIndex)}</span>
+                                  {choice}
+                                </button>
+                              );
+                            })}
+                          </div>
+                          {quizAnswered ? (
+                            <div className={`mini-quiz-result ${quizCorrect ? "result-correct" : "result-wrong"}`}>
+                              <strong>{quizCorrect ? "✅ Benar!" : "❌ Belum tepat."}</strong>
+                              <p>{block.miniQuiz.explanation}</p>
+                            </div>
+                          ) : null}
+                        </div>
+                      </div>
+                    ) : null}
+
+                    {/* ── Memory Tip ── */}
+                    <div className="grammar-memory-tip">
+                      <span>🧠 Tips Menghafal</span>
+                      <p>{block.memoryTip}</p>
+                    </div>
+                  </article>
+                );
+              })}
             </div>
           </section>
 

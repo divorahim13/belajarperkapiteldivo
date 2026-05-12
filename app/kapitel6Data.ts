@@ -40,12 +40,26 @@ export type VocabGroup = {
   items: VocabItem[];
 };
 
+export type GrammarMiniQuiz = {
+  question: string;
+  choices: string[];
+  answer: number;
+  explanation: string;
+};
+
 export type GrammarBlock = {
   title: string;
+  emoji: string;
+  whatIs: string;
+  whenToUse: string[];
   rule: string;
   rows: string[][];
   examples: string[];
+  exampleTranslations: string[];
   trap?: string;
+  trapFix?: string;
+  miniQuiz?: GrammarMiniQuiz;
+  memoryTip: string;
 };
 
 export type PhraseGroup = {
@@ -390,7 +404,15 @@ export const vocabGroups: VocabGroup[] = [
 export const grammarBlocks: GrammarBlock[] = [
   {
     title: "Adjektive nach dem unbestimmten Artikel",
-    rule: "Setelah ein/eine/kein/mein/dein, kata sifat membawa informasi gender dan kasus. Di plural setelah kata artikel, ending umumnya -en.",
+    emoji: "🎨",
+    whatIs: "Dalam bahasa Jerman, kata sifat (Adjektiv) yang berdiri di antara artikel tak tentu (ein, eine, kein, mein, dein) dan kata benda harus mendapat akhiran khusus. Akhiran ini berubah tergantung pada tiga hal: gender kata benda (maskulin, neutrum, feminin), kasus (Nominativ, Akkusativ, Dativ), dan apakah kata benda itu tunggal atau jamak. Bayangkan kata sifat sebagai jembatan antara artikel dan kata benda — jembatan ini harus cocok dengan kedua sisinya.",
+    whenToUse: [
+      "Mendeskripsikan tempat makan saat jalan-jalan: «Ich suche ein elegantes Restaurant.»",
+      "Merekomendasikan acara ke teman: «Das ist ein tolles Konzert!»",
+      "Menulis iklan jual-beli: «Wir bieten einen günstigen Preis.»",
+      "Bercerita tentang pengalaman: «Wir waren in einem gemütlichen Café.»"
+    ],
+    rule: "Setelah ein/eine/kein/mein/dein, kata sifat membawa informasi gender dan kasus. Di Nominativ maskulin: -er, neutrum: -es, feminin: -e. Di Akkusativ maskulin berubah jadi -en. Di Dativ semuanya -en. Di plural tanpa artikel: ending -e.",
     rows: [
       ["Nominativ", "ein bekannter Klassiker", "ein modernes Studio", "eine große Sängerin", "professionelle Trainer"],
       ["Akkusativ", "einen schönen Abend", "ein elegantes Restaurant", "eine große Sängerin", "aktuelle Informationen"],
@@ -402,11 +424,33 @@ export const grammarBlocks: GrammarBlock[] = [
       "Das sind keine großen Probleme.",
       "Sie spricht mit ihren netten Freunden.",
     ],
-    trap: "Akkusativ maskulin berubah: ein bekannter Klassiker, aber ich sehe einen bekannten Klassiker.",
+    exampleTranslations: [
+      "Saya mencari restoran yang elegan.",
+      "Kami pergi ke konser yang indah.",
+      "Itu bukan masalah besar.",
+      "Dia berbicara dengan teman-temannya yang ramah.",
+    ],
+    trap: "Akkusativ maskulin berubah: ein bekannter Klassiker → ich sehe einen bekannten Klassiker. Hanya maskulin yang berubah di Akkusativ!",
+    trapFix: "Cara mengingat: kalau kata bendanya maskulin DAN menjadi objek langsung (Akkusativ), artikelnya jadi 'einen' dan kata sifat ending -en. Feminin dan Neutrum TIDAK berubah di Akkusativ. Hafalkan: Maskulin + Objek = -en -en.",
+    miniQuiz: {
+      question: "Mana yang benar? «Ich suche _____ Restaurant.»",
+      choices: ["ein eleganter", "ein elegantes", "einen eleganten"],
+      answer: 1,
+      explanation: "Restaurant itu Neutrum (das Restaurant). Di Akkusativ, Neutrum tidak berubah — tetap 'ein' + ending '-es'. Jadi: ein elegantes Restaurant.",
+    },
+    memoryTip: "Bayangkan tabel 3×4: baris = kasus (N/A/D), kolom = gender (M/N/F/Pl). Nominativ maskulin = -er (seperti 'er' = dia laki-laki). Akkusativ maskulin = -en (pikirkan: maskulin-Akk selalu -en-en). Dativ = semua -en. Ini pola paling aman untuk dihafalkan pertama.",
   },
   {
     title: "werden: perubahan, profesi, usia",
-    rule: "werden dipakai untuk menjadi, berubah, dan menyebut usia yang akan dicapai.",
+    emoji: "🔄",
+    whatIs: "Kata kerja 'werden' artinya 'menjadi'. Ini dipakai saat kamu ingin bilang bahwa seseorang berubah menjadi sesuatu yang baru — bisa profesi baru (Er wird Lehrer), kondisi baru (Sie wird krank), atau usia baru (Ich werde 30). Werden adalah salah satu kata kerja terpenting di bahasa Jerman karena juga dipakai untuk membentuk Futur (akan) dan Passiv (dikerjakan). Tapi di Kapitel 6 ini, fokus kita adalah 'werden = menjadi/berubah'.",
+    whenToUse: [
+      "Menceritakan perubahan karier: «Er wird Fernfahrer.» (Dia menjadi sopir jarak jauh.)",
+      "Mengatakan usia: «Ich werde nächstes Jahr 25.» (Tahun depan saya 25.)",
+      "Menjelaskan kondisi berubah: «Das Wetter wird kälter.» (Cuacanya menjadi lebih dingin.)",
+      "Bercerita masa lalu: «Mit 21 wurde ich Lehrer.» (Pada usia 21 saya menjadi guru.)"
+    ],
+    rule: "werden dipakai untuk menjadi, berubah, dan menyebut usia yang akan dicapai. Konjugasinya tidak beraturan (ireguler) — perhatikan perubahan vokal di du dan er/sie/es.",
     rows: [
       ["Präsens", "ich werde", "du wirst", "er/sie/es wird", "wir werden", "ihr werdet", "sie/Sie werden"],
       ["Präteritum", "ich wurde", "du wurdest", "er/sie/es wurde", "wir wurden", "ihr wurdet", "sie/Sie wurden"],
@@ -419,11 +463,34 @@ export const grammarBlocks: GrammarBlock[] = [
       "Mit 21 wurde ich Lehrer.",
       "Er ist Oberarzt geworden.",
     ],
-    trap: "Perfekt dari werden memakai sein: ich bin geworden, nicht ich habe geworden.",
+    exampleTranslations: [
+      "Dia menjadi sopir jarak jauh.",
+      "Dia menjadi pengangguran.",
+      "Saya akan berusia 45 tahun.",
+      "Pada usia 21 saya menjadi guru.",
+      "Dia telah menjadi dokter senior.",
+    ],
+    trap: "Perfekt dari werden memakai 'sein', BUKAN 'haben': ich bin geworden ✓ / ich habe geworden ✗",
+    trapFix: "Cara mengingat: werden = perubahan gerakan/keadaan. Semua kata kerja yang menunjukkan perubahan keadaan memakai 'sein' di Perfekt (seperti fahren, kommen, sterben). Jadi werden → bin geworden. Hafalkan frasa: «Ich BIN Lehrer GEWORDEN.»",
+    miniQuiz: {
+      question: "Bentuk Perfekt dari 'er wird Arzt' adalah ...",
+      choices: ["er hat Arzt geworden", "er ist Arzt geworden", "er wurde Arzt geworden"],
+      answer: 1,
+      explanation: "werden membentuk Perfekt dengan 'sein': er ist Arzt geworden. Bukan 'haben'! Dan 'wurde' adalah Präteritum, bukan Perfekt.",
+    },
+    memoryTip: "Konjugasi Präsens: ich werde, du wirst (e→i!), er wird (e→i!), wir werden, ihr werdet, sie werden. Hanya du dan er/sie/es yang berubah vokal. Bayangkan: 'du wirst' seperti 'you will' — singkat dan langsung.",
   },
   {
-    title: "Wenn-Sätze",
-    rule: "Wenn membuka anak kalimat. Verb terkonjugasi pindah ke akhir anak kalimat.",
+    title: "Wenn-Sätze (anak kalimat dengan wenn)",
+    emoji: "🔗",
+    whatIs: "Wenn artinya 'kalau' atau 'jika'. Ini dipakai untuk membuat kalimat bersyarat — misalnya: 'Kalau hujan, saya bawa payung.' Dalam bahasa Jerman, aturannya ketat: setelah 'wenn', kata kerja yang sudah dikonjugasi HARUS pindah ke posisi terakhir dalam anak kalimat. Ini berbeda dari bahasa Indonesia di mana urutan kata tidak berubah. Anak kalimat dengan wenn bisa di awal atau di akhir kalimat utama.",
+    whenToUse: [
+      "Menjelaskan rencana bersyarat: «Wenn ich frei habe, fahre ich Fahrrad.» (Kalau saya bebas, saya bersepeda.)",
+      "Memberi alasan di tempat kerja: «Wenn der Chef kommt, muss ich fertig sein.» (Kalau bos datang, saya harus sudah selesai.)",
+      "Bercerita tentang kebiasaan: «Wenn ich nervös bin, trinke ich Tee.» (Kalau saya gugup, saya minum teh.)",
+      "Membuat janji: «Wenn der Zug spät kommt, rufe ich dich an.» (Kalau keretanya telat, saya telepon kamu.)"
+    ],
+    rule: "Wenn membuka anak kalimat. Kata kerja terkonjugasi pindah ke akhir anak kalimat. Kalimat utama setelahnya dimulai dengan kata kerja (posisi 1), lalu subjek. Kata 'dann' (lalu) boleh dipakai tapi tidak wajib.",
     rows: [
       ["Struktur", "Wenn + Subjekt + ... + Verb, dann + Verb + Subjekt + ..."],
       ["Beispiel", "Wenn ich die Geldbörse verliere, dann gehe ich zur Polizei."],
@@ -434,10 +501,36 @@ export const grammarBlocks: GrammarBlock[] = [
       "Wenn der Zug spät kommt, rufe ich dich an.",
       "Wenn ich frei habe, fahre ich Fahrrad.",
     ],
+    exampleTranslations: [
+      "Kalau saya gugup, saya catat pertanyaan saya.",
+      "Kalau keretanya telat, saya telepon kamu.",
+      "Kalau saya punya waktu luang, saya bersepeda.",
+    ],
+    trap: "Jangan letakkan kata kerja di posisi kedua dalam anak kalimat wenn! Salah: «Wenn ich bin krank» ✗. Benar: «Wenn ich krank bin» ✓.",
+    trapFix: "Trik: setelah 'wenn', bayangkan kata kerja ditarik magnet ke ujung kalimat. Tulis anak kalimatnya dulu: Wenn + Subjek + sisanya + VERB (paling akhir). Lalu tulis kalimat utama: Verb + Subjek + sisanya. Latih dengan 3 kalimat setiap hari sampai otomatis.",
+    miniQuiz: {
+      question: "Mana susunan wenn-Satz yang benar?",
+      choices: [
+        "Wenn ich bin müde, gehe ich ins Bett.",
+        "Wenn ich müde bin, gehe ich ins Bett.",
+        "Wenn ich müde bin, ich gehe ins Bett."
+      ],
+      answer: 1,
+      explanation: "Dalam anak kalimat wenn, kata kerja 'bin' harus di akhir: 'Wenn ich müde bin'. Dan di kalimat utama setelah koma, kata kerja harus di posisi pertama: 'gehe ich'. Pilihan C salah karena 'ich' mendahului 'gehe'.",
+    },
+    memoryTip: "Rumus ajaib: WENN ... VERB-AKHIR, VERB-AWAL ... Bayangkan wenn-Satz seperti bumerang: kata kerja dilempar ke ujung anak kalimat, lalu 'memantul kembali' ke awal kalimat utama.",
   },
   {
-    title: "Höfliche Bitten",
-    rule: "Könnte/Könnten macht permintaan terdengar sopan, terutama di kantor, stasiun, dan telepon.",
+    title: "Höfliche Bitten (permintaan sopan)",
+    emoji: "🎩",
+    whatIs: "Dalam bahasa Jerman, cara meminta sesuatu dengan sopan adalah menggunakan bentuk Konjunktiv II dari 'können', yaitu 'könnte/könntest/könnten'. Ini seperti di bahasa Indonesia kita bilang 'bisakah' atau 'bolehkah' alih-alih langsung 'beri saya'. Bentuk ini WAJIB dipakai di kantor, di stasiun, saat telepon formal, dan saat berbicara dengan orang yang belum kamu kenal.",
+    whenToUse: [
+      "Meminta tolong di stasiun: «Könnten Sie mir bitte den Fahrplan zeigen?» (Bisakah Anda menunjukkan jadwal kereta?)",
+      "Menelepon kantor: «Könnte ich bitte mit Frau Bloch sprechen?» (Bisakah saya berbicara dengan Bu Bloch?)",
+      "Memesan di restoran: «Könnte ich bitte die Speisekarte haben?» (Bisakah saya minta menu?)",
+      "Meminta bantuan teman: «Könntest du mir bitte helfen?» (Bisakah kamu tolong bantu saya?)"
+    ],
+    rule: "Könnte/Könnten membuat permintaan terdengar sopan, terutama di kantor, stasiun, dan telepon. Selalu pakai 'bitte' untuk menambah kesan sopan.",
     rows: [
       ["ich", "Könnte ich bitte ein Glas Wasser haben?"],
       ["du", "Könntest du mir helfen?"],
@@ -448,19 +541,62 @@ export const grammarBlocks: GrammarBlock[] = [
       "Könnte ich bitte zwei Plätze reservieren?",
       "Könnten Sie mir die Durchwahl geben?",
     ],
+    exampleTranslations: [
+      "Bisakah Anda menyambungkan saya dengan Bu Bloch?",
+      "Bisakah saya memesan dua tempat duduk?",
+      "Bisakah Anda memberi saya nomor ekstensi?",
+    ],
+    trap: "Jangan pakai bentuk Indikativ langsung 'Können Sie ...' di situasi sangat formal — itu terdengar kurang sopan. Gunakan Konjunktiv II: 'Könnten Sie ...'",
+    trapFix: "Perbedaan kecil tapi penting: 'Können Sie ...' = bisakah Anda (netral). 'Könnten Sie ...' = bisakah kiranya Anda (lebih sopan). Di telepon kantor dan situasi formal, SELALU pakai 'könnten'. Tambahkan 'bitte' di tengah kalimat untuk efek maksimal.",
+    miniQuiz: {
+      question: "Cara paling sopan meminta disambungkan ke seseorang:",
+      choices: [
+        "Verbinden Sie mich!",
+        "Können Sie mich verbinden?",
+        "Könnten Sie mich bitte verbinden?"
+      ],
+      answer: 2,
+      explanation: "Pilihan C paling sopan: Konjunktiv II (könnten) + bitte + Anda (Sie). Pilihan A terlalu kasar (perintah langsung). Pilihan B sopan tapi belum sempurna.",
+    },
+    memoryTip: "Rumus sopan: Könnten Sie + bitte + Infinitiv? Bayangkan kamu bicara dengan direktur perusahaan — selalu pakai 'könnten' dan 'bitte'. Trik: tambahkan umlaut ö pada 'können' → langsung jadi sopan!",
   },
   {
     title: "Aussprache: m oder n",
-    rule: "Di akhir kata, m dan n harus tetap terdengar beda. Tutup bibir untuk m; lidah menyentuh belakang gigi atas untuk n.",
+    emoji: "👄",
+    whatIs: "Di akhir kata Jerman, huruf 'm' dan 'n' harus diucapkan dengan jelas dan berbeda. Banyak pelajar bahasa Jerman (termasuk penutur Indonesia) sering mencampurkan kedua bunyi ini karena dalam bahasa Indonesia perbedaannya tidak terlalu penting. Tapi di bahasa Jerman, salah ucap m/n bisa mengubah arti kata! Misalnya: 'dem' (Dativ maskulin) vs 'den' (Akkusativ maskulin) — salah ucap berarti salah kasus.",
+    whenToUse: [
+      "Membedakan artikel Dativ dan Akkusativ: 'dem Mann' (Dativ) vs 'den Mann' (Akkusativ)",
+      "Mengucapkan ending adjektiv dengan benar: 'einem neuen' vs 'einen neuen'",
+      "Saat berbicara di telepon formal (harus sangat jelas)",
+      "Saat ujian Sprechen: penguji memperhatikan ketepatan pengucapan m/n"
+    ],
+    rule: "Untuk m: tutup kedua bibir rapat → udara keluar lewat hidung. Untuk n: ujung lidah menyentuh belakang gigi atas → udara keluar lewat hidung. Latih di depan cermin!",
     rows: [
       ["m", "am, im, dem, einem, meinem"],
       ["n", "den, einen, meinen, neuen, schönen"],
-      ["Training", "Lese langsam: dem Mann, den Wagen, einem neuen Lastwagen."],
+      ["Training", "Baca langsam: dem Mann, den Wagen, einem neuen Lastwagen."],
     ],
     examples: [
       "Der Mann von Marlies hilft im Geschäft mit.",
       "Mit seinem neuen Lastwagen fährt Markus in andere Länder.",
     ],
+    exampleTranslations: [
+      "Suami Marlies membantu di toko.",
+      "Dengan truk barunya, Markus berkendara ke negara lain.",
+    ],
+    trap: "Jangan ucapkan 'dem' dan 'den' dengan bunyi yang sama! 'dem' = bibir tertutup. 'den' = lidah ke gigi atas.",
+    trapFix: "Latihan praktis: letakkan jari di bibir. Ucapkan 'dem' — bibir harus menyentuh jari. Ucapkan 'den' — bibir TIDAK menyentuh jari, tapi lidah menyentuh langit-langit mulut depan. Latih pasangan ini 5 kali: dem/den, einem/einen, meinem/meinen.",
+    miniQuiz: {
+      question: "Saat mengucapkan 'm' di akhir kata, posisi mulut yang benar adalah:",
+      choices: [
+        "Lidah menyentuh belakang gigi atas",
+        "Kedua bibir tertutup rapat",
+        "Mulut terbuka lebar"
+      ],
+      answer: 1,
+      explanation: "Huruf 'm' diucapkan dengan menutup kedua bibir rapat dan mengeluarkan udara lewat hidung. 'n' yang menggunakan lidah ke gigi atas. Jangan tertukar!",
+    },
+    memoryTip: "M = Mulut (bibir) tertutup. N = Na(h) gigi (lidah ke gigi atas). Gunakan asosiasi huruf pertama: M-Mulut, N-Nah(gigi). Latih setiap hari dengan pasangan: dem/den, einem/einen.",
   },
 ];
 
